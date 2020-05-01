@@ -5,7 +5,7 @@
 192.168.48.13 ansible_ssh_pass=centos ansible_sudo_pass=centos
 
 [app]
-172.16.203.13 ansible_ssh_pass=centos ansible_sudo_pass=centos
+192.168.48.13 ansible_ssh_pass=centos ansible_sudo_pass=centos
 
 [registry]
 192.168.48.12 ansible_ssh_pass=centos ansible_sudo_pass=centos
