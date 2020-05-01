@@ -7,13 +7,13 @@ pipeline {
         sh 'ls -la'
       }
     }
-    stage('Build api and studentlist app image') {
-      steps {
-        sh 'docker-compose build'
-        sh 'docker images'
-        sh 'docker ps -a'
-      }
-    }
+//    stage('Build api and studentlist app image') {
+//      steps {
+//        sh 'docker-compose build'
+//        sh 'docker images'
+//        sh 'docker ps -a'
+//      }
+//    }
     stage('Deploy infrastructure with Ansible') {
       steps {
         echo 'Hello world'
