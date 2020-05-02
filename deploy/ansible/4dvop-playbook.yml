@@ -131,7 +131,7 @@
         src: /opt/bitnami/jenkins/jenkins_home/workspace/4dvop_master/appli
         dest: /home/centos/
         owner: centos
-        mode: "0644"
+        mode: "u+rw,g-wx,o-rwx"
         directory_mode: yes
 
 
