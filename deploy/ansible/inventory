@@ -3,7 +3,9 @@
 192.168.48.10 ansible_ssh_pass=centos ansible_sudo_pass=centos
 192.168.48.12 ansible_ssh_pass=centos ansible_sudo_pass=centos
 192.168.48.13 ansible_ssh_pass=centos ansible_sudo_pass=centos
-172.19.0.2 ansible_connection=local
+172.19.0.2 ansible_connection=local ansible_python_interpreter=/usr/bin/python
+
+
 
 [app]
 192.168.48.13 ansible_ssh_pass=centos ansible_sudo_pass=centos
