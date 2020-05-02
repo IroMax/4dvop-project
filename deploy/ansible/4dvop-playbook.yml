@@ -119,17 +119,31 @@
           FRONTEND_BROWSE_ONLY_MODE: "false"
 
 # ----------------------------------------------------------
+#                APPLI - Clone repository
+# ----------------------------------------------------------
+- name: Clone Repository
+  hosts: appli
+  become: true
+  
+  tasks:
+    - name: clone
+      copy:
+        src: ./appli/simple_api
+        dest: /home/centos/
+
+
+# ----------------------------------------------------------
 #                LOCAL build images VM
 # ----------------------------------------------------------
 - name:  Build and push api and studentlist app
-  hosts: local
+  hosts: appli
   tags:
     - build-push-image
   tasks:
     - name: Build an image and push it to a private repo
       docker_image:
         build:
-          path: .appli/
+          path: /home/centos/simple_api/
         name: 192.168.18.12:8000/simple-api
         tag: v1
         push: yes
