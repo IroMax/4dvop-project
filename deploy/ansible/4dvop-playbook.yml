@@ -4,7 +4,7 @@
 #                ALL VM
 # ----------------------------------------------------------
 - name: Install docker
-  hosts: all:!local
+  hosts: all
   become: true
   
   pre_tasks:
@@ -122,7 +122,7 @@
 #                APPLI - Clone repository
 # ----------------------------------------------------------
 - name: Clone Repository
-  hosts: appli
+  hosts: app
   become: true
   
   tasks:
@@ -136,7 +136,7 @@
 #                LOCAL build images VM
 # ----------------------------------------------------------
 - name:  Build and push api and studentlist app
-  hosts: appli
+  hosts: app
   tags:
     - build-push-image
   tasks:

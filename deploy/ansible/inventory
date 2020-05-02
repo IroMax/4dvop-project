@@ -16,4 +16,3 @@
 
 [deploy]
 192.168.48.10 ansible_ssh_pass=centos ansible_sudo_pass=centos
-
