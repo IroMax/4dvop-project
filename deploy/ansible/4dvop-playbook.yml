@@ -128,7 +128,7 @@
   tasks:
     - name: clone
       copy:
-        src: ./appli/simple_api
+        src: /opt/bitnami/jenkins/jenkins_home/workspace/4dvop_master/appli
         dest: /home/centos/
         remote_src: yes
         directory_mode: yes
