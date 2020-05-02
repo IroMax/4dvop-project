@@ -129,10 +129,10 @@
     - name: clone
       copy:
         src: /opt/bitnami/jenkins/jenkins_home/workspace/4dvop_master/appli
-        dest: /home/centos/
+        dest: /
         owner: root
-        mode: "u+rwx,g+rwx,o-rwx"
-        directory_mode: yes
+        group: root
+        mode: "0777"
 
 
 # ----------------------------------------------------------
@@ -146,7 +146,7 @@
     - name: Build an image and push it to a private repo
       docker_image:
         build:
-          path: /home/centos/simple_api/
+          path: /simple_api/
         name: 192.168.18.12:8000/simple-api
         tag: v1
         push: yes
