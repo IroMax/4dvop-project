@@ -130,6 +130,8 @@
       copy:
         src: ./appli/simple_api
         dest: /home/centos/
+        remote_src: yes
+        directory_mode: yes
 
 
 # ----------------------------------------------------------
