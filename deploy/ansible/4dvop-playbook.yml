@@ -130,7 +130,7 @@
       copy:
         src: /opt/bitnami/jenkins/jenkins_home/workspace/4dvop_master/appli
         dest: /home/centos/
-        owner: centos
+        owner: root
         mode: "u+rwx,g+rwx,o-rwx"
         directory_mode: yes
 
