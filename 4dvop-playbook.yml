@@ -110,7 +110,7 @@
         name: registry-frontend
         state: started
         image: konradkleine/docker-registry-frontend:v2
-        links: registry:registry
+        links: registry-ctn:registry-ctn
         ports:
           - "80:80"
         env:
