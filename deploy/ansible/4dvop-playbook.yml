@@ -166,7 +166,7 @@
 #                RUN 
 # ----------------------------------------------------------
 - name:  Inst
-  hosts: jdac
+  hosts: app
   tags:
     - run-app
   tasks:
@@ -184,7 +184,7 @@
     - run-app
   tasks:
     - name: Run app task
-      docker_service:
+      docker_compose:
         project_src: /home/centos/appli
         build: no
       register: output
