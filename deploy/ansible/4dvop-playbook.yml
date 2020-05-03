@@ -3,19 +3,20 @@
 # ----------------------------------------------------------
 #                ALL VM
 # ----------------------------------------------------------
-- name: Install docker
-  hosts: all
-  become: true
-  tags:
-    - run-app-
-  tasks:
-    - name: Install required packages
-      apt:
-        state: present
-        update_cache: true
-        name:
-          - python-pip
-          - python-setuptools
+#- name: Install docker
+#  hosts: all
+#  become: true
+#  tags:
+#    - run-app-
+
+##  tasks:
+##    - name: Install required packages
+##      apt:
+##        state: present
+##        update_cache: true
+##        name:
+##          - python-pip
+##          - python-setuptools
 #  pre_tasks:
 #    - name: Install epel-release
 #      yum:
