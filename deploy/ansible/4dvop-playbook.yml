@@ -124,12 +124,20 @@
 - name: Clone Repository
   hosts: app
   become: true
-  
+
   tasks:
-    - name: clone
+    - name: clone app
       copy:
         src: /opt/bitnami/jenkins/jenkins_home/workspace/4dvop_master/appli
         dest: /home/centos
+
+    - name: clone daemon.json
+      copy:
+        src: /opt/bitnami/jenkins/jenkins_home/workspace/4dvop_master/appli/daemon.json
+        dest: /etc/docker/daemon.json
+
+    - name: restart docker
+      shell: service docker restart
 
 
 # ----------------------------------------------------------
@@ -143,7 +151,7 @@
     - name: Build an image and push it to a private repo
       docker_image:
         build:
-          path: /simple_api/
+          path: /appli/simple_api/
         name: 192.168.18.12:8000/simple-api
         tag: v1
         push: yes
