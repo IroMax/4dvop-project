@@ -53,6 +53,13 @@
         name: python-devel
         state: present
 
+    - name: Install docker
+      pip:
+        name: docker
+    
+    - name: Install docker-compose
+      pip:
+        name: docker-compose
         
 
 # --------------------------------------------------------------
