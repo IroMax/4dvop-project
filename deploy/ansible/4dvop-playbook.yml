@@ -161,3 +161,17 @@
       docker_image:
         name: php:apache
         source: pull
+
+# ----------------------------------------------------------
+#                RUN 
+# ----------------------------------------------------------
+- name:  Run app
+  hosts: app
+  tags:
+    - run-app
+  
+  tasks:
+    - name: Run app task
+      docker_compose:
+        project_src: /home/centos/appli
+        build: no

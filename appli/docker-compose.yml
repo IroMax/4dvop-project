@@ -2,7 +2,7 @@ version: '3'
 
 services:
   api:
-    build: ./simple_api
+    build: 192.168.48.12:8000/simple-api:v1
     container_name: api
     image: simple-api
     volumes:
