@@ -3,7 +3,7 @@
 172.16.203.146 ansible_ssh_pass=centos ansible_sudo_pass=centos
 172.16.203.147 ansible_ssh_pass=centos ansible_sudo_pass=centos
 172.16.203.145 ansible_ssh_pass=centos ansible_sudo_pass=centos
-172.17.0.2 ansible_connection=local ansible_python_interpreter=/usr/bin/python
+#172.17.0.2 ansible_connection=local ansible_python_interpreter=/usr/bin/python
 
 [app]
 172.16.203.144 ansible_ssh_pass=centos ansible_sudo_pass=centos
@@ -17,5 +17,5 @@
 [deploy]
 172.16.203.144 ansible_ssh_pass=centos ansible_sudo_pass=centos
 
-[local]
-172.17.0.2 ansible_connection=local
+#[local]
+#172.17.0.2 ansible_connection=local
