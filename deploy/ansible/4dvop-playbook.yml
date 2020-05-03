@@ -81,7 +81,7 @@
           - "4000:3000"
         networks:
         - name: app-network
-#        networks_cli_compatible: yes
+        networks_cli_compatible: yes
 
 
 # ----------------------------------------------------------
