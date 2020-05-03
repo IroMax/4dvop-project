@@ -166,11 +166,24 @@
 #                RUN 
 # ----------------------------------------------------------
 - name:  Run app
+  hosts: jdac
+  tags:
+    - run-app
+  tasks:
+    - name: Install Docker-compose
+      pip: 
+        name: docker-compose
+
+
+# ----------------------------------------------------------
+#                RUN 
+# ----------------------------------------------------------
+- name:  Run app
   hosts: app
   tags:
     - run-app
   
-  tasks:
+
     - name: Run app task
       docker_compose:
         project_src: /home/centos/appli
