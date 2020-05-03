@@ -9,9 +9,9 @@
   tags:
     - run-app-
 
-  roles:
-    - role: "nickjj.docker"
-      tags: ["docker"]
+#  roles:
+#    - role: "nickjj.docker"
+#      tags: ["docker"]
 
 #  pre_tasks:
 #    - name: Install epel-release
