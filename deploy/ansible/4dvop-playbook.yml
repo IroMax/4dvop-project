@@ -66,8 +66,8 @@
 # ----------------------------------------------------------
 #                REPOSITORY VM
 # ----------------------------------------------------------
-- name: Deploy Gos, private github repository
-  hosts: app
+- name: Deploy Gos, private git repository
+  hosts: repository
   become: true
 
   tasks:
