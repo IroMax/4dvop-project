@@ -53,6 +53,10 @@
         name: python-devel
         state: present
 
+    - name: Upgrade pip
+      pip:
+        name: pip --upgrade
+
     - name: Install docker
       pip:
         name: docker
