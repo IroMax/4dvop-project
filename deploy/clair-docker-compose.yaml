@@ -4,11 +4,13 @@ services:
   clair-db:
     image: arminc/clair-db
     container_name: clair-db
+    ports:
+      - "5432:5432"
 
   clair:
     image: arminc/clair-local-scan
     container_name: clair
     ports:
-          - "6060:6060"
+      - "6060:6060"
     depends_on:
       - clair-db
