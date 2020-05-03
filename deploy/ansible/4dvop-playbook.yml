@@ -160,5 +160,4 @@
     - name: Pull from registry
       docker_image:
         name: php:apache
-        build.pull: yes
         source: pull
