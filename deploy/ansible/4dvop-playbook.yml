@@ -159,7 +159,7 @@
 - name:  Build and push api and studentlist app
   hosts: app
   tags:
-    - build-push-image
+    - run-app-
   tasks:
     - name: Build an image and push it to a private repo
       docker_image:
