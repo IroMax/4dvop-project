@@ -10,7 +10,7 @@ services:
       - ./simple_api:/usr/src/app
       - ./simple_api/student_age.json:/data/student_age.json
     ports:
-      - 5001:5000
+      - 5000:5000
 
   website:
     image: php:apache
