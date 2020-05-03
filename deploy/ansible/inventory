@@ -3,7 +3,6 @@
 192.168.48.10 ansible_ssh_pass=centos ansible_sudo_pass=centos
 192.168.48.12 ansible_ssh_pass=centos ansible_sudo_pass=centos
 192.168.48.13 ansible_ssh_pass=centos ansible_sudo_pass=centos
-172.19.0.2 ansible_connection=local
 
 [app]
 192.168.48.13 ansible_ssh_pass=centos ansible_sudo_pass=centos
@@ -16,6 +15,3 @@
 
 [deploy]
 192.168.48.10 ansible_ssh_pass=centos ansible_sudo_pass=centos
-
-[jdac]
-172.19.0.2 ansible_connection=local
