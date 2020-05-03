@@ -10,6 +10,6 @@ services:
     container_name: clair
     ports:
           - "6060:6060"
-    links:
-      clair-db:clair-db
+    depends_on:
+      clair-db
 
