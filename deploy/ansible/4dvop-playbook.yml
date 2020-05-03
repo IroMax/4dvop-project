@@ -185,6 +185,6 @@
   tasks:
     - name: Run app task
       docker_compose:
-        project_src: /home/centos/appli/
+        project_src: /home/centos/appli
         build: no
       register: output
