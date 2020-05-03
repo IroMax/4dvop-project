@@ -3,38 +3,55 @@
 # ----------------------------------------------------------
 #                ALL VM
 # ----------------------------------------------------------
-#- name: Install docker
-#  hosts: all
-#  become: true
-#  tags:
-#    - run-app-
+- name: Install docker
+  hosts: all:!app
+  become: true
+  tags:
+    - run-app-
 
-##  tasks:
-##    - name: Install required packages
-##      apt:
-##        state: present
-##        update_cache: true
-##        name:
-##          - python-pip
-##          - python-setuptools
-#  pre_tasks:
-#    - name: Install epel-release
-#      yum:
-#        name: epel-release
-#        state: latest
+  pre_tasks:
+    - name: Install epel-release
+      yum:
+        name: epel-release
+        state: latest
       
-#    - name: Install python pip
-#      yum:
-#        name: python-pip
-#        state: latest
-#    - name: Install docker
-#      pip:
-#        name: docker
+    - name: Install python pip
+      yum:
+        name: python-pip
+        state: latest
+    - name: Install docker
+      pip:
+        name: docker
 
-#  tasks:
-#    - include_role: 
-#        name: geerlingguy.docker
-#
+  tasks:
+    - include_role: 
+        name: geerlingguy.docker
+
+# ----------------------------------------------------------
+#                APP REQUIREMENTS
+# ----------------------------------------------------------
+
+- name: Install docker on app server
+  hosts: app
+  become: true
+  tags:
+    - run-app-
+
+  pre_tasks:
+    - name: Install epel-release-app
+      yum:
+        name: epel-release
+        state: latest
+      
+    - name: install the 'Development tools' package group
+      yum:
+        name: "@Development tools"
+        state: present
+
+    - name: Python-devel
+      yum:
+        name: python-devel
+        state: present
 
         
 
