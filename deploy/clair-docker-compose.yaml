@@ -6,6 +6,8 @@ services:
     container_name: clair-db
     ports:
       - "5432:5432"
+    networks:
+      name: 4dvop-studentlist_default
 
   clair:
     image: arminc/clair-local-scan
@@ -14,3 +16,5 @@ services:
       - "6060:6060"
     depends_on:
       - clair-db
+    networks:
+      name: 4dvop-studentlist_default
