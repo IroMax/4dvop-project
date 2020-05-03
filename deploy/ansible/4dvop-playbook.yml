@@ -9,28 +9,24 @@
   tags:
     - run-app-
 
-#  roles:
-#    - role: "nickjj.docker"
-#      tags: ["docker"]
-
-#  pre_tasks:
-#    - name: Install epel-release
-#      yum:
-#        name: epel-release
-#        state: latest
+  pre_tasks:
+    - name: Install epel-release
+      yum:
+        name: epel-release
+        state: latest
       
-#    - name: Install python pip
-#      yum:
-#        name: python-pip
-#        state: latest
-#    - name: Install docker
-#      pip:
-#        name: docker
+    - name: Install python pip
+      yum:
+        name: python-pip
+        state: latest
+    - name: Install docker
+      pip:
+        name: docker
 
-#  tasks:
-#    - include_role: 
-#        name: geerlingguy.docker
-#
+  tasks:
+    - include_role: 
+        name: geerlingguy.docker
+
         
 
 # --------------------------------------------------------------
