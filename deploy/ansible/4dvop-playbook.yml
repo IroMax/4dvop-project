@@ -166,7 +166,7 @@
 #                RUN 
 # ----------------------------------------------------------
 - name:  Inst
-  hosts: app
+  hosts: jdac
   tags:
     - run-app
   tasks:
