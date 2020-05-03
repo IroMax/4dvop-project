@@ -2,7 +2,7 @@ version: '3'
 
 services:
   clair-db:
-    image: arminc/clair-scanner
+    image: arminc/clair-db
     container_name: clair-db
 
   clair:
