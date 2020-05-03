@@ -88,7 +88,7 @@
  #               REGISTRY VM
  #----------------------------------------------------------
 - name: Deploy registry, private docker registry
-  hosts: repository
+  hosts: registry
   become: true
 
   tasks:
