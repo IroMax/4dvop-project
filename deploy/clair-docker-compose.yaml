@@ -7,7 +7,7 @@ services:
     ports:
       - "5432:5432"
     networks:
-      name: 4dvop-studentlist_default
+      - 4dvop-studentlist_default
 
   clair:
     image: arminc/clair-local-scan
@@ -17,4 +17,4 @@ services:
     depends_on:
       - clair-db
     networks:
-      name: 4dvop-studentlist_default
+      - 4dvop-studentlist_default
