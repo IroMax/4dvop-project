@@ -6,24 +6,32 @@
 - name: Install docker
   hosts: all
   become: true
-  
+  vars:
+    pip_install_packages:
+      - name: docker
+      - name: docker-compose==1.22.0
+
   pre_tasks:
     - name: Install epel-release
       yum:
         name: epel-release
         state: latest
-    - name: Install python pip
-      yum:
-        name: python-pip
-        state: latest
-    - name: Install docker
-      pip:
-        name: docker
+      
+#    - name: Install python pip
+#      yum:
+#        name: python-pip
+#        state: latest
+#    - name: Install docker
+#      pip:
+#        name: docker
 
   tasks:
+    - include_role:
+        name: geerlingguy.pip
     - include_role: 
         name: geerlingguy.docker
 
+        
 
 # --------------------------------------------------------------
 #                REPOSITORY  VM - SETUP postgres for gogs image
@@ -161,19 +169,6 @@
       docker_image:
         name: php:apache
         source: pull
-
-# ----------------------------------------------------------
-#                RUN 
-# ----------------------------------------------------------
-- name:  Inst
-  hosts: jdac
-  tags:
-    - run-app
-  tasks:
-    - name: Install Docker-compose
-      pip: 
-        name: docker-compose
-
 
 # ----------------------------------------------------------
 #                RUN 
