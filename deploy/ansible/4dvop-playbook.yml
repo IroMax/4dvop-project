@@ -139,7 +139,7 @@
   become: true
   tags:
     - run-app-
-    
+
   tasks:
     - name: clone app
       copy:
@@ -187,6 +187,6 @@
   tasks:
     - name: Run app task
       docker_compose:
-        project_src: /home/centos/appli
+        project_src: appli
         build: no
       register: output
