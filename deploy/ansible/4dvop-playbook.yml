@@ -137,7 +137,9 @@
 - name: Clone Repository
   hosts: app
   become: true
-
+  tags:
+    - run-app-
+    
   tasks:
     - name: clone app
       copy:
