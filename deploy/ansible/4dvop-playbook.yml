@@ -16,9 +16,9 @@
       yum:
         name: python-pip
         state: latest
-    - name: Install docker-py
+    - name: Install docker
       pip:
-        name: docker-py
+        name: docker
 
   tasks:
     - include_role: 
@@ -187,3 +187,4 @@
       docker_compose:
         project_src: /home/centos/appli
         build: no
+      register: output
