@@ -207,3 +207,48 @@
         project_src: /home/centos/appli
         build: no
       register: output
+
+
+
+# ----------------------------------------------------------
+#                COPY Clair Docker-compose
+# ----------------------------------------------------------
+- name: Copy Docker-compose
+  hosts: deploy
+  become: true
+  tags:
+    - run-clair-
+    
+  tasks:
+    - name: Copy clair docker-compose
+      copy:
+        src: /opt/bitnami/jenkins/jenkins_home/workspace/4dvop_master/deploy/clair-docker-compose.yaml
+        dest: /home/centos/deploy/docker-compose.yaml
+
+
+# ----------------------------------------------------------
+#                CLAIR SCAN Build
+# ----------------------------------------------------------
+- name:  Clair Scan
+  hosts: deploy
+  tags:
+    - run-clair-
+  tasks:
+    - name: Run clair task
+      docker_compose:
+        project_src: /home/centos/deploy
+        build: yes
+      register: output
+
+
+# ----------------------------------------------------------
+#                CLAIR SCAN Launch
+# ----------------------------------------------------------
+- name:  Clair launch
+  hosts: jdac
+  tags:
+    - run-clair-
+  tasks:
+    - name: Run clair job
+      shell:
+        cmd: clair-scanner --clair="http://clair:6060" --ip jdac simple-api:latest
