@@ -29,39 +29,39 @@
 #                REPOSITORY  VM - SETUP postgres for gogs image
 # --------------------------------------------------------------
 
-- name: setup postgres
-  hosts: repository
-  become: true
-
-  tasks:
-    - include_role:
-        name: levonet.docker_postgres
-      vars:
-        docker_postgres__name: 4dvop-pg-ctn
-        docker_postgres__image: postgres:11.1-alpine
-        docker_postgres__port: 5678
-        docker_postgres__superuser_name: superuser
-        docker_postgres__superuser_password: supersecret
-        docker_postgres__env:
-          POSTGRES_DB: 4dvop-db
-        docker_postgres__log_driver: syslog
-        docker_postgres__log_options:
-          syslog-facility: local0
-          tag: "{{ docker_postgres__name }}"
-
-# ----------------------------------------------------------
-#                REPOSITORY  VM
-# ----------------------------------------------------------
-- name: Install git
-  hosts: repository
-  become: true
-
-  tasks:
-    - name: Install git
-      yum:
-        name: git
-        state: present
-        update_cache: yes
+#- name: setup postgres
+#  hosts: repository
+#  become: true
+#
+#  tasks:
+#    - include_role:
+#        name: levonet.docker_postgres
+#      vars:
+#        docker_postgres__name: 4dvop-pg-ctn
+#        docker_postgres__image: postgres:11.1-alpine
+#        docker_postgres__port: 5678
+#        docker_postgres__superuser_name: superuser
+#        docker_postgres__superuser_password: supersecret
+#        docker_postgres__env:
+#          POSTGRES_DB: 4dvop-db
+#        docker_postgres__log_driver: syslog
+#        docker_postgres__log_options:
+#          syslog-facility: local0
+#          tag: "{{ docker_postgres__name }}"
+#
+## ----------------------------------------------------------
+##                REPOSITORY  VM
+## ----------------------------------------------------------
+#- name: Install git
+#  hosts: repository
+#  become: true
+#
+#  tasks:
+#    - name: Install git
+#      yum:
+#        name: git
+#        state: present
+#        update_cache: yes
 
 # ----------------------------------------------------------
 #                REPOSITORY VM
@@ -87,34 +87,34 @@
 # ----------------------------------------------------------
 #                REGISTRY VM
 # ----------------------------------------------------------
-- name: Deploy registry, private docker registry
-  hosts: registry
-  become: true
-
-  tasks:
-    - name: Deploy private repository task
-      docker_container:
-        name: registry-ctn
-        image: registry
-        state: started
-        ports:
-          - "8000:5000"
-
-- name: Deploy registry frontend
-  hosts: registry
-  become: true
-
-  tasks:
-    - name: Deploy registry fronetnd task
-      docker_container:
-        name: registry-frontend
-        state: started
-        image: konradkleine/docker-registry-frontend:v2
-        links: registry-ctn:registry-ctn
-        ports:
-          - "80:80"
-        env:
-          ENV_DOCKER_REGISTRY_HOST: registry-ctn
-          ENV_DOCKER_REGISTRY_PORT: "5000"
-          FRONTEND_BROWSE_ONLY_MODE: "false"
+#- name: Deploy registry, private docker registry
+#  hosts: registry
+#  become: true
+#
+#  tasks:
+#    - name: Deploy private repository task
+#      docker_container:
+#        name: registry-ctn
+#        image: registry
+#        state: started
+#        ports:
+#          - "8000:5000"
+#
+#- name: Deploy registry frontend
+#  hosts: registry
+#  become: true
+#
+#  tasks:
+#    - name: Deploy registry fronetnd task
+#      docker_container:
+#        name: registry-frontend
+#        state: started
+#        image: konradkleine/docker-registry-frontend:v2
+#        links: registry-ctn:registry-ctn
+#        ports:
+#          - "80:80"
+#        env:
+#          ENV_DOCKER_REGISTRY_HOST: registry-ctn
+#          ENV_DOCKER_REGISTRY_PORT: "5000"
+#          FRONTEND_BROWSE_ONLY_MODE: "false"
 
