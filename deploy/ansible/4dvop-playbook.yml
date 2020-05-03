@@ -130,9 +130,6 @@
       copy:
         src: /opt/bitnami/jenkins/jenkins_home/workspace/4dvop_master/appli
         dest: /home/centos
-        owner: root
-        group: root
-        mode: "0777"
 
 
 # ----------------------------------------------------------
