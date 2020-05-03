@@ -223,7 +223,7 @@
     - name: Copy clair docker-compose
       copy:
         src: /opt/bitnami/jenkins/jenkins_home/workspace/4dvop_master/deploy/clair-docker-compose.yaml
-        dest: /home/centos/deploy/docker-compose.yaml
+        dest: /home/centos/docker-compose.yaml
 
 
 # ----------------------------------------------------------
@@ -236,7 +236,7 @@
   tasks:
     - name: Run clair task
       docker_compose:
-        project_src: /home/centos/deploy
+        project_src: /home/centos
         build: yes
       register: output
 
