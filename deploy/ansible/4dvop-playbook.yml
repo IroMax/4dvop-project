@@ -56,7 +56,7 @@
     - name: Upgrade pip
       pip:
         name: pip
-        executable: pip3
+        executable: pip2
         extra_args: --upgrade
 
     - name: Install docker
