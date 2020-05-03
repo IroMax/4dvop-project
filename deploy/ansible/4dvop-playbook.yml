@@ -67,7 +67,7 @@
 #                REPOSITORY VM
 # ----------------------------------------------------------
 - name: Deploy Gos, private github repository
-  hosts: registry
+  hosts: app
   become: true
 
   tasks:
@@ -92,7 +92,7 @@
 #  become: true
 #
 #  tasks:
-#    - name: Deploy private repository task
+#    - name: Deploy private docker registry task
 #      docker_container:
 #        name: registry-ctn
 #        image: registry
