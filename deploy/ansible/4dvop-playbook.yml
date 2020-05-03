@@ -35,7 +35,7 @@
   hosts: app,deploy
   become: true
   tags:
-    - run-app-
+    - run-clair-
 
   pre_tasks:
     - name: Install epel-release-app
