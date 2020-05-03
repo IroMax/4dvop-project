@@ -181,7 +181,7 @@
 - name:  Run app
   hosts: app
   tags:
-    - run-app
+    - run-app-
   tasks:
     - name: Run app task
       docker_compose:
