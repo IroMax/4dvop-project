@@ -11,5 +11,4 @@ services:
     ports:
           - "6060:6060"
     depends_on:
-      clair-db
-
+      - clair-db
