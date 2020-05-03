@@ -4,7 +4,7 @@
 #                ALL VM
 # ----------------------------------------------------------
 - name: Install docker
-  hosts: all
+  hosts: jdac
   become: true
   vars:
     pip_install_packages:
@@ -12,7 +12,7 @@
       - name: docker-compose
   tags:
     - run-app-
-      
+
   pre_tasks:
     - name: Install epel-release
       yum:
