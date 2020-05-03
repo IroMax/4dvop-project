@@ -4,20 +4,20 @@
 #                ALL VM
 # ----------------------------------------------------------
 - name: Install docker
-  hosts: jdac
+  hosts: all
   become: true
-  vars:
-    pip_install_packages:
-      - name: docker
-      - name: docker-compose
   tags:
     - run-app-
 
-  pre_tasks:
-    - name: Install epel-release
-      yum:
-        name: epel-release
-        state: latest
+  roles:
+    - role: "nickjj.docker"
+      tags: ["docker"]
+
+#  pre_tasks:
+#    - name: Install epel-release
+#      yum:
+#        name: epel-release
+#        state: latest
       
 #    - name: Install python pip
 #      yum:
@@ -27,13 +27,9 @@
 #      pip:
 #        name: docker
 
-  tasks:
-    - include_role:
-        name: geerlingguy.pip
-        apply:
-          become: yes
-    - include_role: 
-        name: geerlingguy.docker
+#  tasks:
+#    - include_role: 
+#        name: geerlingguy.docker
 
         
 
