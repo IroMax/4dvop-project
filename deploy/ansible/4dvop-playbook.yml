@@ -9,7 +9,7 @@
   vars:
     pip_install_packages:
       - name: docker
-      - name: docker-compose==1.22.0
+      - name: docker-compose
 
   pre_tasks:
     - name: Install epel-release
@@ -28,6 +28,8 @@
   tasks:
     - include_role:
         name: geerlingguy.pip
+        apply:
+          become: yes
     - include_role: 
         name: geerlingguy.docker
 
