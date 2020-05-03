@@ -10,7 +10,9 @@
     pip_install_packages:
       - name: docker
       - name: docker-compose
-
+  tags:
+    - run-app-
+      
   pre_tasks:
     - name: Install epel-release
       yum:
