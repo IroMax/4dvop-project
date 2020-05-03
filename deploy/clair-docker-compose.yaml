@@ -20,4 +20,4 @@ services:
       - 4dvop-studentlist_default
 
 networks:
-  name: 4dvop-studentlist_default
+  4dvop-studentlist_default:
