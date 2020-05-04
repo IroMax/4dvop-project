@@ -384,13 +384,11 @@
          clone: yes
 
     - name: Run gaultlt container
-      shell: 
-        cmd: make build
-        args:
-          chdir: /gauntlt
+      shell: make build
+      args:
+        chdir: /gauntlt
 
     - name: Add binary stub to path
-      shell: 
-        cmd: install-stub
-        args:
-          chdir: /gauntlt
+      shell: install-stub
+      args:
+        chdir: /gauntlt
