@@ -299,8 +299,7 @@
     - name: Build app and push it to a private repo
       docker_image:
         build:
-          #PATH à mettre à jour
-          path: /home/centos/4dvop-project/4dvop-studentlist/simple_api
+          path: /app/appli/simple_api
         name: 192.168.48.12:8000/simple-api
         tag: latest
         push: yes
@@ -322,8 +321,8 @@
         ports:
           - "5001:5000"
         volumes:
-          - /home/centos/4dvop-project/4dvop-studentlist/simple_api:/usr/src/app
-          - /home/centos/4dvop-project/4dvop-studentlist/simple_api/student_age.json:/data/student_age.json
+          - /app/appli/simple_api:/usr/src/app
+          - /app/appli/simple_api/student_age.json:/data/student_age.json
 
 # ----------------------------------------------------------
 #      TEST api
