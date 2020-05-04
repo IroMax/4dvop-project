@@ -351,4 +351,4 @@
       docker_prune:
         images: yes
         images_filters:
-          label: simple-api
+          - label: simple-api
