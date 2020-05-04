@@ -305,7 +305,7 @@
       docker_container:
         name: simple-api
         image: 
-          - 192.168.48.12:8000/simple-api
+          - simple-api
         ports:
           - "5000:5000"
         volumes:
