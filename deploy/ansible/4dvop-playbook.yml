@@ -30,13 +30,13 @@
 # ----------------------------------------------------------
 #      Install prerequisites on Application and Deploy
 # ----------------------------------------------------------
-  
+
 - name: Install docker on jdac
   hosts: jdac
   become: true
   tags:
     - inst-prerequisites
-
+  tasks:
     - name: Install docker
       pip:
         name: docker
