@@ -7,17 +7,10 @@ pipeline {
         sh 'ls -la'
       }
     }
-//    stage('Build api and studentlist app image') {
-//      steps {
-//        sh 'docker-compose build'
-//        sh 'docker images'
-//        sh 'docker ps -a'
-//      }
-//    }
     stage('Install prerequisites on servers') {
       steps {
         echo 'Hello world'
-        sh 'ansible-playbook -i ./deploy/ansible/inventory ./deploy/ansible/4dvop-playbook.yml --tags inst-prerequisites'
+//        sh 'ansible-playbook -i ./deploy/ansible/inventory ./deploy/ansible/4dvop-playbook.yml --tags inst-prerequisites'
       }
     }
     stage('Deploy Registry') {
@@ -72,6 +65,7 @@ pipeline {
     stage('Run security testing with Arachni') {
       steps {
         echo 'Hello world'
+        sh 'ansible-playbook -i ./deploy/ansible/inventory ./deploy/ansible/4dvop-playbook.yml --tags e2e-test'
       }
     }
   }

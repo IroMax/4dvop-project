@@ -355,7 +355,7 @@
         source: pull
 
 # ----------------------------------------------------------
-#                RUN 
+#                RUN app on App
 # ----------------------------------------------------------
 - name:  Run app
   hosts: app
@@ -367,3 +367,30 @@
         project_src: /app/appli
         build: yes
       register: output
+
+# ----------------------------------------------------------
+#                E2E Security tests with Gaultl/Arachni
+# ----------------------------------------------------------
+
+- name:  Get gaultl code
+  hosts: deploy
+  tags:
+    - e2e-test
+  tasks:
+    - name: Get code from gauntlt-docker
+      git:
+         repo: 'https://github.com/gauntlt/gauntlt-docker'
+         dest: /gauntlt
+         clone: yes
+
+    - name: Run gaultlt container
+      shell: 
+        cmd: make build
+        args:
+          chdir: /gauntlt
+
+    - name: Add binary stub to path
+      shell: 
+        cmd: install-stub
+        args:
+          chdir: /gauntlt
