@@ -7,7 +7,7 @@
   hosts: all:!app,deploy
   become: true
   tags:
-    - run-app-
+    - inst-prerequisites
 
   pre_tasks:
     - name: Install epel-release
@@ -35,7 +35,7 @@
   hosts: app,deploy
   become: true
   tags:
-    - run-clair-
+    - inst-prerequisites
 
   pre_tasks:
     - name: Install epel-release-app
@@ -75,7 +75,8 @@
 - name: setup postgres
   hosts: repository
   become: true
-
+  tags:
+    - deploy-repository
   tasks:
     - include_role: 
         name: levonet.docker_postgres
@@ -98,7 +99,8 @@
 - name: Install git
   hosts: repository
   become: true
-
+  tags:
+    - deploy-repository
   tasks:
     - name: Install git
       yum:
@@ -112,7 +114,8 @@
 - name: Deploy Gos, private github repository
   hosts: repository
   become: true
-
+  tags:
+    - deploy-repository
   tasks:
     - name: Deploy private repository task
       docker_container:
@@ -133,7 +136,8 @@
 - name: Deploy registry, private docker registry
   hosts: registry
   become: true
-  
+  tags:
+    - deploy-registry  
   tasks:
     - name: Deploy private repository task
       docker_container:
@@ -146,9 +150,10 @@
 - name: Deploy registry frontend
   hosts: registry
   become: true
-  
+  tags:
+    - deploy-registry    
   tasks:
-    - name: Deploy registry fronetnd task
+    - name: Deploy registry frontend task
       docker_container:
         name: registry-frontend
         state: started
@@ -168,7 +173,7 @@
   hosts: app
   become: true
   tags:
-    - run-app-
+    - run-app
     
   tasks:
     - name: clone app
@@ -191,7 +196,7 @@
 - name:  Build and push api and studentlist app
   hosts: app
   tags:
-    - run-app-
+    - run-app
   tasks:
     - name: Build an image and push it to a private repo
       docker_image:
@@ -213,7 +218,7 @@
 - name:  Run app
   hosts: app
   tags:
-    - run-app-
+    - run-app
   tasks:
     - name: Run app task
       docker_compose:
@@ -228,7 +233,7 @@
 - name:  curl check
   hosts: deploy
   tags:
-    - run-app-
+    - check-api
   tasks:
     - name: Run check api
       shell:
@@ -241,7 +246,7 @@
   hosts: deploy
   become: true
   tags:
-    - run-clair-
+    - deploy-clair
     
   tasks:
     - name: Copy clair docker-compose
@@ -256,7 +261,7 @@
 - name:  Clair Scan
   hosts: deploy
   tags:
-    - run-clair-
+    - deploy-clair
   tasks:
     - name: Run clair task
       docker_compose:
@@ -271,7 +276,7 @@
 - name:  Clair launch
   hosts: jdac
   tags:
-    - run-clair-
+    - deploy-clair
   tasks:
     - name: Run clair job
       shell:

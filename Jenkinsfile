@@ -14,30 +14,40 @@ pipeline {
 //        sh 'docker ps -a'
 //      }
 //    }
-    stage('Deploy infrastructure with Ansible') {
+    stage('Install prerequisites on servers') {
       steps {
         echo 'Hello world'
-        sh 'ansible-playbook -i ./deploy/ansible/inventory ./deploy/ansible/4dvop-playbook.yml --tags run-app-'
+        sh 'ansible-playbook -i ./deploy/ansible/inventory ./deploy/ansible/4dvop-playbook.yml --tags inst-prerequisites'
       }
     }
-    stage('Testing image') {
+    stage('Deploy Registry') {
       steps {
         echo 'Hello world'
+        sh 'ansible-playbook -i ./deploy/ansible/inventory ./deploy/ansible/4dvop-playbook.yml --tags deploy-registry'
+      }
+    }
+    stage('Deploy Repository') {
+      steps {
+        echo 'Hello world'
+        sh 'ansible-playbook -i ./deploy/ansible/inventory ./deploy/ansible/4dvop-playbook.yml --tags deploy-repository'
       }
     }
     stage('Run simple api container') {
       steps {
         echo 'Hello world'
+        sh 'ansible-playbook -i ./deploy/ansible/inventory ./deploy/ansible/4dvop-playbook.yml --tags run-app'
       }
     }
     stage('Testing the api') {
       steps {
         echo 'Hello world'
+        sh 'ansible-playbook -i ./deploy/ansible/inventory ./deploy/ansible/4dvop-playbook.yml --tags check-app'
       }
     }
     stage('Validate image with Clair') {
       steps {
         echo 'Hello world'
+        sh 'ansible-playbook -i ./deploy/ansible/inventory ./deploy/ansible/4dvop-playbook.yml --tags deploy-clair'
       }
     }
     stage('push images to registry server') {
