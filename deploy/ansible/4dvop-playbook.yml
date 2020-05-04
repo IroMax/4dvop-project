@@ -196,14 +196,14 @@
 #         clone: yes
 
 # ----------------------------------------------------------
-#    BUILD images on jdac and push to Registry
+#    BUILD simple-api
 # ----------------------------------------------------------
-- name:  Build and push api and studentlist app
+- name:  Build simple-api
   hosts: jdac
   tags:
     - build-simple-api
   tasks:
-    - name: Build app and push it to a private repo
+    - name: Build simple-api task
       docker_image:
         build:
           path: /opt/bitnami/jenkins/jenkins_home/workspace/4dvop_master/appli/simple_api
@@ -241,7 +241,7 @@
   tasks:
     - name: Run check api
       shell: 
-        cmd: curl -u toto:python -X GET http://jdac:5001/pozos/api/v1.0/get_student_ages
+        cmd: curl -u toto:python -X GET http://localhost:5001/pozos/api/v1.0/get_student_ages
 
 # ----------------------------------------------------------
 #      STOP api container from Deploy
