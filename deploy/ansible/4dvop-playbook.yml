@@ -3,36 +3,36 @@
 # ----------------------------------------------------------
 #     Install prerequisites on Registry and Repository
 # ----------------------------------------------------------
-- name: Install docker
-  hosts: registry,repository
-  become: true
-  tags:
-    - inst-prerequisites
+#- name: Install docker
+#  hosts: registry,repository
+#  become: true
+#  tags:
+#    - inst-prerequisites
 
-  tasks:
-    - name: Install epel-release
-      yum:
-        name: epel-release
-        state: latest
+#  tasks:
+#    - name: Install epel-release
+#      yum:
+#        name: epel-release
+#        state: latest
       
-    - name: Install python pip
-      yum:
-        name: python-pip
-        state: latest
+#    - name: Install python pip
+#      yum:
+#        name: python-pip
+#        state: latest
     
-    - name: Install docker
-      pip:
-        name: docker
+#    - name: Install docker
+#      pip:
+#        name: docker
   
-    - include_role: 
-        name: geerlingguy.docker
+#    - include_role: 
+#        name: geerlingguy.docker
 
 # ----------------------------------------------------------
 #      Install prerequisites on Application and Deploy
 # ----------------------------------------------------------
 
 - name: Install docker on app server
-  hosts: app,deploy
+  hosts: all
   become: true
   tags:
     - inst-prerequisites
@@ -67,34 +67,26 @@
       pip:
         name: docker-compose
 
-        
-# ----------------------------------------------------------
-#      Install git prerequisite on Repository, Deploy and Appli
-# ---------------------------------------------------------- 
 
-- name: Install GIT on Repository, Deploy and Appli
-  hosts: repository, deploy, app
+
+# ----------------------------------------------------------
+#     RUN REPOSITORY GOS AND POSTGRES
+# ----------------------------------------------------------
+- name: Deploy Gos, private github repository
+  hosts: repository
   become: true
   tags:
-    - inst-prerequisites
-
-  tasks:
+    - deploy-repository
+  
+  pre_tasks:
     - name: Install git
       yum:
         name: git
         state: present
         update_cache: yes
-
-# --------------------------------------------------------------
-#     RUN REPOSITORY DATABSE
-# --------------------------------------------------------------
-
-- name: setup postgres
-  hosts: repository
-  become: true
-  tags:
-    - deploy-repository
+    
   tasks:
+
     - include_role: 
         name: levonet.docker_postgres
       vars:
@@ -110,17 +102,6 @@
           syslog-facility: local0
           tag: "{{ docker_postgres__name }}"
 
-
-
-# ----------------------------------------------------------
-#     RUN REPOSITORY GOS
-# ----------------------------------------------------------
-- name: Deploy Gos, private github repository
-  hosts: repository
-  become: true
-  tags:
-    - deploy-repository
-  tasks:
     - name: Deploy private repository task
       docker_container:
         name: gogs-ctn
@@ -132,6 +113,7 @@
         - name: app-network
         networks_cli_compatible: yes
 
+  
 
 # ----------------------------------------------------------
 #    RUN REGISTRY VM
@@ -150,12 +132,6 @@
         ports:
           - "8000:5000"
           
-- name: Deploy registry frontend
-  hosts: registry
-  become: true
-  tags:
-    - deploy-registry    
-  tasks:
     - name: Deploy registry frontend task
       docker_container:
         name: registry-frontend
@@ -169,46 +145,53 @@
           ENV_DOCKER_REGISTRY_PORT: "5000"
           FRONTEND_BROWSE_ONLY_MODE: "false"
 
+    - name: Create a registry-network network and connect containers
+      docker_network:
+        name: registry-network
+        connected:
+          - registry-ctn
+          - registry-frontend
+
 # ----------------------------------------------------------
 #    GET Code From Repository on Deploy
 # ----------------------------------------------------------
-- name:  Get code
-  hosts: deploy
-  tags:
-    - get-code
-  tasks:
-    - name: Get code from private repo
-      git:
-         repo: 'http://192.168.48.11:4000/Djodane/4dvop'
-         dest: /app
-         clone: yes
+#- name:  Get code
+#  hosts: deploy
+#  tags:
+#    - get-code
+#  tasks:
+#    - name: Get code from private repo
+#      git:
+#         repo: 'http://192.168.48.11:4000/Djodane/4dvop'
+#         dest: /app
+#         clone: yes
 
 # ----------------------------------------------------------
 #    GET Code From Repository on appli
 # ----------------------------------------------------------
-- name:  Get code
-  hosts: app
-  tags:
-    - get-code
-  tasks:
-    - name: Get code from private repo
-      git:
-         repo: 'http://192.168.48.11:4000/Djodane/4dvop'
-         dest: /app
-         clone: yes
+#- name:  Get code
+#  hosts: app
+#  tags:
+#    - get-code
+#  tasks:
+#    - name: Get code from private repo
+#      git:
+#         repo: 'http://192.168.48.11:4000/Djodane/4dvop'
+#         dest: /app
+#         clone: yes
 
 # ----------------------------------------------------------
-#    BUILD images on Deploy and push to Registry
+#    BUILD images on jdac and push to Registry
 # ----------------------------------------------------------
 - name:  Build and push api and studentlist app
-  hosts: deploy
+  hosts: jdac
   tags:
     - build-simple-api
   tasks:
     - name: Build app and push it to a private repo
       docker_image:
         build:
-          path: /app/appli/simple_api
+          path: /opt/bitnami/jenkins/jenkins_home/workspace/4dvop_master/appli/simple_api
         name: 192.168.48.12:8000/simple-api
         tag: latest
         push: yes
@@ -219,7 +202,7 @@
 # ----------------------------------------------------------
 
 - name:  Run app
-  hosts: deploy
+  hosts: jdac
   tags:
     - run-simple-api
   tasks:
@@ -229,9 +212,9 @@
         image: simple-api:latest
         ports:
           - "5001:5000"
-        volumes:
-          - /app/appli/simple_api:/usr/src/app
-          - /app/appli/simple_api/student_age.json:/data/student_age.json
+#        volumes:
+#          - /opt/bitnami/jenkins/jenkins_home/workspace/4dvop_master/appli/simple_api:/usr/src/app
+#          - /app/appli/simple_api/student_age.json:/data/student_age.json
 
 # ----------------------------------------------------------
 #      TEST api from Deploy
@@ -243,7 +226,7 @@
   tasks:
     - name: Run check api
       shell: 
-        cmd: curl -u toto:python -X GET http://192.168.48.10:5001/pozos/api/v1.0/get_student_ages
+        cmd: curl -u toto:python -X GET http://jdac:5001/pozos/api/v1.0/get_student_ages
 
 # ----------------------------------------------------------
 #      STOP api container from Deploy
@@ -259,47 +242,19 @@
          name: simple-api
          state: stopped
 
-# ----------------------------------------------------------
-#     CLEAN Deploy docker image simple-api
-# ----------------------------------------------------------
-
-- name:  Clean images
-  hosts: deploy
-  tags:
-    - test-simple-api
-  tasks:
-    - name: Clean images
-      docker_image:
-        name: 192.168.48.12:8000/simple-api
-        state: absent
-
-# ----------------------------------------------------------
-#                COPY Clair Docker-compose
-# ----------------------------------------------------------
-- name: Copy Docker-compose
-  hosts: deploy
-  become: true
-  tags:
-    - clair
-    
-  tasks:
-    - name: Copy clair docker-compose
-      copy:
-        src: /app/deploy/clair-docker-compose.yaml
-        dest: /home/centos/docker-compose.yaml
 
 
 # ----------------------------------------------------------
 #                CLAIR SCAN Build
 # ----------------------------------------------------------
 - name:  Clair Scan
-  hosts: deploy
+  hosts: jdac
   tags:
     - clair
   tasks:
     - name: Run clair task
       docker_compose:
-        project_src: /home/centos
+        project_src: /opt/bitnami/jenkins/jenkins_home/workspace/4dvop_master/deploy/clair
         build: yes
       register: output
 
@@ -317,12 +272,29 @@
         cmd: clair-scanner --clair="http://clair:6060" --ip jdac simple-api:latest
 
 
+#### Add push simple-api
+
+# ----------------------------------------------------------
+#     CLEAN Deploy docker image simple-api
+# ----------------------------------------------------------
+### A faire apres clair # Penser a ajouter la step dans le jenkinsfile
+- name:  Clean images
+  hosts: jdac
+  tags:
+    - clean-api-image
+  tasks:
+    - name: Clean images
+      docker_image:
+        name: 192.168.48.12:8000/simple-api
+        state: absent
+
+
 
 # ----------------------------------------------------------
 #                APPLI Add daemon.json
 # ----------------------------------------------------------
 - name: Clone Repository
-  hosts: app
+  hosts: deploy
   become: true
   tags:
     - run-app
@@ -333,9 +305,13 @@
  #       src: /opt/bitnami/jenkins/jenkins_home/workspace/4dvop_master/appli
  #       dest: /home/centos
 
+#    - name: copy daemon.json
+#      shell:
+#        cmd: cp /app/appli/daemon.json /etc/docker/daemon.json  
     - name: copy daemon.json
-      shell:
-        cmd: cp /app/appli/daemon.json /etc/docker/daemon.json        
+      copy:
+        src: /opt/bitnami/jenkins/jenkins_home/workspace/4dvop_master/appli/daemon.json
+        dst: /etc/docker/daemon.json   
 
     - name: restart docker
       shell: service docker restart
@@ -344,15 +320,15 @@
 # ----------------------------------------------------------
 #                DEPLOY app on App
 # ----------------------------------------------------------
-- name:  Deploy api and studentlist app
-  hosts: app
-  tags:
-    - run-app
-  tasks:    
-    - name: Pull from registry
-      docker_image:
-        name: php:apache
-        source: pull
+#- name:  Get Image 
+#  hosts: app
+#  tags:
+#    - run-app
+#  tasks:    
+#    - name: Pull image
+#      docker_image:
+#        name: php:apache
+#        source: pull
 
 # ----------------------------------------------------------
 #                RUN app on App
@@ -364,8 +340,8 @@
   tasks:
     - name: Run app task
       docker_compose:
-        project_src: /app/appli
-        build: yes
+        project_src: /opt/bitnami/jenkins/jenkins_home/workspace/4dvop_master/appli
+        build: no
       register: output
 
 # ----------------------------------------------------------
@@ -373,7 +349,7 @@
 # ----------------------------------------------------------
 
 - name:  Get gaultl code
-  hosts: deploy
+  hosts: jdac
   tags:
     - e2e-test
   tasks:

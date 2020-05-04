@@ -1,5 +1,5 @@
 FROM python:2.7-stretch
-LABEL maintainer="salah xxx@supinfo.com"
+LABEL maintainer="Romain SINET - romain.sinet@econocom.com"
 
 COPY . /usr/src/app
 COPY ./student_age.py .
