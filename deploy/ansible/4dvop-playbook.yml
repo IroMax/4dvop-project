@@ -69,11 +69,11 @@
 
         
 # ----------------------------------------------------------
-#      Install git prerequisite on Repository
+#      Install git prerequisite on Repository and Deploy
 # ---------------------------------------------------------- 
 
 - name: Install GIT on Repository
-  hosts: repository
+  hosts: repository, deploy
   become: true
   tags:
     - inst-prerequisites
@@ -285,7 +285,7 @@
     - name: Get code from private repo
       git:
          repo: 'http://192.168.48.11:4000/Djodane/4dvop.git'
-         dest: /home/centos
+         dest: /app
          clone: yes
 
 # ----------------------------------------------------------
