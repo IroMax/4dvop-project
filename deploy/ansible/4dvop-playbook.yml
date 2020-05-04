@@ -305,12 +305,11 @@
       docker_container:
         name: simple-api
         source: /home/centos/4dvop-project/4dvop-studentlist/simple_api
-        build: no
         ports:
           - "5000:5000"
         volumes:
-          - ./appli/simple_api:/usr/src/app
-          - ./appli/simple_api/student_age.json:/data/student_age.json
+          - /home/centos/4dvop-project/4dvop-studentlist/simple_api:/usr/src/app
+          - /home/centos/4dvop-project/4dvop-studentlist/simple_api/student_age.json:/data/student_age.json
 
 # ----------------------------------------------------------
 #      TEST api
