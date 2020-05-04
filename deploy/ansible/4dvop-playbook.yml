@@ -157,13 +157,13 @@
         name: docker-compose
         state: present
 
-      - name: Copy daemon json file to  daemon.json
-        copy:
-          src: /opt/bitnami/jenkins/jenkins_home/workspace/4dvop-project_complete-playbook/appli/daemon.json
-          dest: /etc/docker/daemon.json
+    - name: Copy daemon json file to  daemon.json
+      copy:
+        src: /opt/bitnami/jenkins/jenkins_home/workspace/4dvop-project_complete-playbook/appli/daemon.json
+        dest: /etc/docker/daemon.json
 
-      - name: restart docker
-        shell: service docker restart
+    - name: restart docker
+      shell: service docker restart
 
   tasks:
     - name: Build docker compose yaml file task
