@@ -306,7 +306,7 @@
         name: simple-api
         image: simple-api:latest
         ports:
-          - "5000:5000"
+          - "5001:5000"
         volumes:
           - /home/centos/4dvop-project/4dvop-studentlist/simple_api:/usr/src/app
           - /home/centos/4dvop-project/4dvop-studentlist/simple_api/student_age.json:/data/student_age.json
@@ -321,7 +321,7 @@
   tasks:
     - name: Run check api
       shell:
-        cmd: curl -u toto:python -X GET http://192.168.48.10:5000/pozos/api/v1.0/get_student_ages
+        cmd: curl -u toto:python -X GET http://192.168.48.10:5001/pozos/api/v1.0/get_student_ages
 
 # ----------------------------------------------------------
 #      STOP api
