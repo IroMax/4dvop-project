@@ -24,7 +24,7 @@
     - include_role: 
         name: geerlingguy.docker
 
-
+#
 # --------------------------------------------------------------
 #                REPOSITORY  VM - SETUP postgres for gogs image
 # --------------------------------------------------------------
