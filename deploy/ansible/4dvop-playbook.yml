@@ -4,27 +4,70 @@
 #                ALL VM
 # ----------------------------------------------------------
 - name: Install docker
-  hosts: all
+  hosts: all:!app,deploy
   become: true
-  
+  tags:
+    - run-app-
+
   pre_tasks:
     - name: Install epel-release
       yum:
         name: epel-release
         state: latest
+      
     - name: Install python pip
       yum:
         name: python-pip
         state: latest
-    - name: Install docker-py
+    - name: Install docker
       pip:
-        name: docker-py
+        name: docker
 
   tasks:
     - include_role: 
         name: geerlingguy.docker
 
-#
+# ----------------------------------------------------------
+#                APP REQUIREMENTS
+# ----------------------------------------------------------
+
+- name: Install docker on app server
+  hosts: app,deploy
+  become: true
+  tags:
+    - run-clair-
+
+  pre_tasks:
+    - name: Install epel-release-app
+      yum:
+        name: epel-release
+        state: latest
+      
+    - name: install the 'Development tools' package group
+      yum:
+        name: "@Development tools"
+        state: present
+
+    - name: Python-devel
+      yum:
+        name: python-devel
+        state: present
+
+    - name: Upgrade pip
+      pip:
+        name: pip
+        executable: pip2
+        extra_args: --upgrade
+
+    - name: Install docker
+      pip:
+        name: docker
+    
+    - name: Install docker-compose
+      pip:
+        name: docker-compose
+        
+
 # --------------------------------------------------------------
 #                REPOSITORY  VM - SETUP postgres for gogs image
 # --------------------------------------------------------------
@@ -124,13 +167,22 @@
 - name: Clone Repository
   hosts: app
   become: true
-  
+  tags:
+    - run-app-
+    
   tasks:
-    - name: clone
+    - name: clone app
       copy:
         src: /opt/bitnami/jenkins/jenkins_home/workspace/4dvop_master/appli
-        dest: /
+        dest: /home/centos
 
+    - name: clone daemon.json
+      copy:
+        src: /opt/bitnami/jenkins/jenkins_home/workspace/4dvop_master/appli/daemon.json
+        dest: /etc/docker/daemon.json
+
+    - name: restart docker
+      shell: service docker restart
 
 
 # ----------------------------------------------------------
@@ -139,13 +191,13 @@
 - name:  Build and push api and studentlist app
   hosts: app
   tags:
-    - build-push-image
+    - run-app-
   tasks:
     - name: Build an image and push it to a private repo
       docker_image:
         build:
-          path: /simple_api/
-        name: 192.168.18.12:8000/simple-api
+          path: /home/centos/appli/simple_api
+        name: 192.168.48.12:8000/simple-api
         tag: v1
         push: yes
         source: build
@@ -153,5 +205,63 @@
     - name: Pull from registry
       docker_image:
         name: php:apache
-        build.pull: yes
         source: pull
+
+# ----------------------------------------------------------
+#                RUN 
+# ----------------------------------------------------------
+- name:  Run app
+  hosts: app
+  tags:
+    - run-app-
+  tasks:
+    - name: Run app task
+      docker_compose:
+        project_src: /home/centos/appli
+        build: no
+      register: output
+
+
+
+# ----------------------------------------------------------
+#                COPY Clair Docker-compose
+# ----------------------------------------------------------
+- name: Copy Docker-compose
+  hosts: deploy
+  become: true
+  tags:
+    - run-clair-
+    
+  tasks:
+    - name: Copy clair docker-compose
+      copy:
+        src: /opt/bitnami/jenkins/jenkins_home/workspace/4dvop_master/deploy/clair-docker-compose.yaml
+        dest: /home/centos/docker-compose.yaml
+
+
+# ----------------------------------------------------------
+#                CLAIR SCAN Build
+# ----------------------------------------------------------
+- name:  Clair Scan
+  hosts: deploy
+  tags:
+    - run-clair-
+  tasks:
+    - name: Run clair task
+      docker_compose:
+        project_src: /home/centos
+        build: yes
+      register: output
+
+
+# ----------------------------------------------------------
+#                CLAIR SCAN Launch
+# ----------------------------------------------------------
+- name:  Clair launch
+  hosts: jdac
+  tags:
+    - run-clair-
+  tasks:
+    - name: Run clair job
+      shell:
+        cmd: clair-scanner --clair="http://clair:6060" --ip jdac simple-api:latest
