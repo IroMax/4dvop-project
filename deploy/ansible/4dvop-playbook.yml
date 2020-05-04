@@ -82,6 +82,8 @@
 - name: setup postgres
   hosts: repository
   become: true
+  tags:
+    - repository
 
   tasks:
     - include_role:
@@ -119,6 +121,8 @@
 - name: Deploy Gos, private github repository
   hosts: repository
   become: true
+  tags:
+    - gos
 
   tasks:
     - name: Deploy private repository task
@@ -140,6 +144,8 @@
 - name: Deploy docker private registry
   hosts: registry
   become: true
+  tags:
+    - registry
 
   tasks:
     - name: Deploy private registry task

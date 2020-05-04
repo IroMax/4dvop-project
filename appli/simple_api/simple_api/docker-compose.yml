@@ -2,12 +2,12 @@ version: '3'
 
 services:
   api:
-    build: ./simple_api
+    build: ./
     container_name: api
     image: simple-api
-    volumes:
-      - ./simple_api:/usr/src/app
-      - ./simple_api/student_age.json:/data/student_age.json
+#    volumes:
+#      - ./simple_api:/usr/src/app
+#      - ./simple_api/student_age.json:/data/student_age.json
     ports:
       - 5001:5000
 
