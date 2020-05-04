@@ -317,9 +317,9 @@
         cmd: clair-scanner --clair="http://clair:6060" --ip jdac simple-api:latest
 
 
-###############
+
 # ----------------------------------------------------------
-#                APPLI - Clone repository
+#                APPLI Add daemon.json
 # ----------------------------------------------------------
 - name: Clone Repository
   hosts: app
@@ -328,10 +328,10 @@
     - run-app
     
   tasks:
-    - name: move app
-      copy:
-        src: /opt/bitnami/jenkins/jenkins_home/workspace/4dvop_master/appli
-        dest: /home/centos
+ #   - name: move app
+ #     copy:
+ #       src: /opt/bitnami/jenkins/jenkins_home/workspace/4dvop_master/appli
+ #       dest: /home/centos
 
     - name: copy daemon.json
       shell:
@@ -348,16 +348,7 @@
   hosts: app
   tags:
     - run-app
-  tasks:
-#    - name: Build an image and push it to a private repo
-#      docker_image:
-#        build:
-#          path: /app/appli/simple_api
-#        name: 192.168.48.12:8000/simple-api
-#        tag: v1
-#        push: yes
-#        source: build
-    
+  tasks:    
     - name: Pull from registry
       docker_image:
         name: php:apache
@@ -376,8 +367,3 @@
         project_src: /app/appli
         build: yes
       register: output
-
-
-
-
-######################################
