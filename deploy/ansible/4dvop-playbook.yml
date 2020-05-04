@@ -350,4 +350,4 @@
       docker_prune:
         images: yes
         images_filters:
-          reference: 192.168.48.12:8000/simple-api
+          image_name: 192.168.48.12:8000/simple-api
