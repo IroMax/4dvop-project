@@ -350,5 +350,4 @@
     - name: Clean images
       docker_prune:
         images: yes
-        images_filters:
-          - label: simple-api
+        images_filters: label=simple-api
