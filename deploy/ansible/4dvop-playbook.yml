@@ -136,6 +136,25 @@
           - registry-ctn
           - registry-frontend-ctn
 
+
+# --------------------------------------------------------------------------
+# SETUP docker registry security settings for pushing images - DEPLOY VM
+# --------------------------------------------------------------------------
+- name:  Setup daemon registry security setting for pushing images
+  hosts: deploy
+  become: true
+  tags:
+    - registry-daemon
+
+  tasks:
+    - name: Copy daemon json file to  deploy vm task
+      copy:
+        src: /opt/bitnami/jenkins/jenkins_home/workspace/4dvop-project_complete-playbook/appli/daemon.json
+        dest: /etc/docker/daemon.json
+
+    - name: restart docker
+      shell: service docker restart
+
 # ----------------------------------------------------------
 #                LOCAL build AND PUSH TO REGISTRY images VM
 # ----------------------------------------------------------
@@ -156,14 +175,6 @@
       pip:
         name: docker-compose
         state: present
-
-    - name: Copy daemon json file to  daemon.json
-      copy:
-        src: /opt/bitnami/jenkins/jenkins_home/workspace/4dvop-project_complete-playbook/appli/daemon.json
-        dest: /etc/docker/daemon.json
-
-    - name: restart docker
-      shell: service docker restart
 
   tasks:
     - name: Build docker compose yaml file task
