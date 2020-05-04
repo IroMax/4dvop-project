@@ -179,7 +179,7 @@
   tasks:
     - name: Get code from private repo
       git:
-         repo: 'http://192.168.48.11:4000/Djodane/4dvop.git'
+         repo: 'http://192.168.48.11:4000/Djodane/4dvop'
          dest: /app
          clone: yes
 
@@ -301,7 +301,7 @@
     - name: Run clair job
       shell:
         cmd: clair-scanner --clair="http://clair:6060" --ip jdac simple-api:latest
-        
+
 
 ###############
 # ----------------------------------------------------------
