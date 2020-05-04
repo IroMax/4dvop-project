@@ -60,7 +60,13 @@ pipeline {
     stage('Validate image with Clair on Build System') {
       steps {
         echo 'Hello world'
-        sh 'ansible-playbook -i ./deploy/ansible/inventory ./deploy/ansible/4dvop-playbook.yml --tags clair'
+//        sh 'ansible-playbook -i ./deploy/ansible/inventory ./deploy/ansible/4dvop-playbook.yml --tags clair'
+      }
+    }
+    stage('Deploy app from Build System on App server') {
+      steps {
+        echo 'Hello world'
+        sh 'ansible-playbook -i ./deploy/ansible/inventory ./deploy/ansible/4dvop-playbook.yml --tags run-app'
       }
     }
     stage('Run security testing with Arachni') {

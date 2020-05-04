@@ -69,11 +69,11 @@
 
         
 # ----------------------------------------------------------
-#      Install git prerequisite on Repository and Deploy
+#      Install git prerequisite on Repository, Deploy and Appli
 # ---------------------------------------------------------- 
 
-- name: Install GIT on Repository
-  hosts: repository, deploy
+- name: Install GIT on Repository, Deploy and Appli
+  hosts: repository, deploy, app
   become: true
   tags:
     - inst-prerequisites
@@ -174,6 +174,20 @@
 # ----------------------------------------------------------
 - name:  Get code
   hosts: deploy
+  tags:
+    - get-code
+  tasks:
+    - name: Get code from private repo
+      git:
+         repo: 'http://192.168.48.11:4000/Djodane/4dvop'
+         dest: /app
+         clone: yes
+
+# ----------------------------------------------------------
+#    GET Code From Repository on appli
+# ----------------------------------------------------------
+- name:  Get code
+  hosts: app
   tags:
     - get-code
   tasks:
@@ -321,7 +335,7 @@
 
     - name: clone daemon.json
       copy:
-        src: /opt/bitnami/jenkins/jenkins_home/workspace/4dvop_master/appli/daemon.json
+        src: /app/appli/daemon.json
         dest: /etc/docker/daemon.json
 
     - name: restart docker
@@ -329,21 +343,21 @@
 
 
 # ----------------------------------------------------------
-#                LOCAL build images VM
+#                DEPLOY app on App
 # ----------------------------------------------------------
-- name:  Build and push api and studentlist app
+- name:  Deploy api and studentlist app
   hosts: app
   tags:
     - run-app
   tasks:
-    - name: Build an image and push it to a private repo
-      docker_image:
-        build:
-          path: /home/centos/appli/simple_api
-        name: 192.168.48.12:8000/simple-api
-        tag: v1
-        push: yes
-        source: build
+#    - name: Build an image and push it to a private repo
+#      docker_image:
+#        build:
+#          path: /app/appli/simple_api
+#        name: 192.168.48.12:8000/simple-api
+#        tag: v1
+#        push: yes
+#        source: build
     
     - name: Pull from registry
       docker_image:
@@ -360,8 +374,8 @@
   tasks:
     - name: Run app task
       docker_compose:
-        project_src: /home/centos/appli
-        build: no
+        project_src: /app/appli
+        build: yes
       register: output
 
 
