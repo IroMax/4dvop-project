@@ -242,7 +242,7 @@
     - test-simple-api
   tasks:
     - name: Run check api
-      shell: /app/deploy/test-api.sh
+      shell: test-api.sh
       args:
         chdir: /app/deploy
 
@@ -265,7 +265,7 @@
 # ----------------------------------------------------------
 
 - name:  Clean images
-  hosts: app
+  hosts: deploy
   tags:
     - test-simple-api
   tasks:
