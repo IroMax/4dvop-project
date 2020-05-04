@@ -242,9 +242,8 @@
     - test-simple-api
   tasks:
     - name: Run check api
-      shell: test-api.sh
-      args:
-        chdir: /app/deploy
+      shell: 
+        cmd:curl -u toto:python -X GET http://192.168.48.10:5001/pozos/api/v1.0/get_student_ages
 
 # ----------------------------------------------------------
 #      STOP api container from Deploy
