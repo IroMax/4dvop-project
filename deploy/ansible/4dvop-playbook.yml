@@ -4,7 +4,7 @@
 #                ALL VM
 # ----------------------------------------------------------
 - name: Install docker
-  hosts: all:!app&local
+  hosts: all:!app:!local
   become: true
   tags:
     - run-app-
