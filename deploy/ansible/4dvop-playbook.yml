@@ -353,9 +353,14 @@
   tags:
     - run-app
   tasks:
+    - name: Copy Dockercompose file
+      copy:
+        src: /opt/bitnami/jenkins/jenkins_home/workspace/4dvop_master/appli/simple_api/docker-compose.yml
+        dest: /home/centos/docker-compose.yml
+
     - name: Run app task
       docker_compose:
-        project_src: /opt/bitnami/jenkins/jenkins_home/workspace/4dvop_master/appli/simple_api
+        project_src: /home/centos
         build: no
       register: output
 
