@@ -39,37 +39,6 @@
         name: geerlingguy.docker
 
 # ----------------------------------------------------------
-#                APP REQUIREMENTS
-# ----------------------------------------------------------
-
-#- name: Install docker on app server
-#  hosts: app
-#  become: true
-#  tags:
-#    - run-app-
-#
-#  pre_tasks:
-#    - name: Install epel-release-app
-#      yum:
-#        name: epel-release
-#        state: latest
-#
-#    - name: install the 'Development tools' package group
-#      yum:
-#        name: "@Development tools"
-#        state: present
-#
-#    - name: Python-devel
-#      yum:
-#        name: python-devel
-#        state: present
-#
-#  tasks:
-#    - include_role:
-#        name: geerlingguy.docker
-
-
-# ----------------------------------------------------------
 #                REPOSITORY VM
 # ----------------------------------------------------------
 - name: Deploy Gos, private github repository
