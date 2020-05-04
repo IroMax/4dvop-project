@@ -304,7 +304,8 @@
     - name: Run app task
       docker_container:
         name: simple-api
-        source: /home/centos/4dvop-project/4dvop-studentlist/simple_api
+        image: 
+          - 192.168.48.12:8000/simple-api
         ports:
           - "5000:5000"
         volumes:
