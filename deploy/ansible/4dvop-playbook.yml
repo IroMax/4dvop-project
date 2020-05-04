@@ -328,15 +328,14 @@
     - run-app
     
   tasks:
-    - name: clone app
+    - name: move app
       copy:
         src: /opt/bitnami/jenkins/jenkins_home/workspace/4dvop_master/appli
         dest: /home/centos
 
-    - name: clone daemon.json
-      copy:
-        src: /app/appli/daemon.json
-        dest: /etc/docker/daemon.json
+    - name: copy daemon.json
+      shell:
+        cmd: cp /app/appli/daemon.json /etc/docker/daemon.json        
 
     - name: restart docker
       shell: service docker restart
