@@ -174,19 +174,33 @@
           ENV_DOCKER_REGISTRY_PORT: "5000"
           FRONTEND_BROWSE_ONLY_MODE: "false"
 # ----------------------------------------------------------
-#                LOCAL build images VM
+#                LOCAL build AND PUSH TO REGISTRY images VM
 # ----------------------------------------------------------
 
-- name:  Build api and studentlist
+- name:  Build api and studentlist and push to registry
   hosts: local
   tags:
-    - build-app
+    - build-push-app
   tasks:
     - name: Build docker compose yaml file task
       docker_compose:
         project_src: /opt/bitnami/jenkins/jenkins_home/workspace/4dvop-project_complete-playbook/appli/simple_api/simple_api
         build: yes
       register: output
+
+    - name: Push api to docker private registry task
+      docker_image:
+        name: 172.16.203.146:8000/simple-api
+        tag: v1
+        push: yes
+        source: local
+
+    - name: Push php app to docker private registry task
+        docker_image:
+          name: 172.16.203.146:8000/php
+          tag: apache
+          push: yes
+          source: local
 
 # ----------------------------------------------------------
 #                APPLI - Clone repository
