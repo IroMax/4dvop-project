@@ -156,23 +156,19 @@
         ports:
           - "8000:5000"
 
-- name: Deploy registry frontend
-  hosts: registry
-  become: true
+    - name: Deploy docker registry frontend task
+        docker_container:
+          name: registry-frontend
+          state: started
+          image: konradkleine/docker-registry-frontend:v2
+          links: registry-ctn:registry-ctn
+          ports:
+            - "80:80"
+          env:
+            ENV_DOCKER_REGISTRY_HOST: registry-ctn
+            ENV_DOCKER_REGISTRY_PORT: "5000"
+            FRONTEND_BROWSE_ONLY_MODE: "false"
 
-  tasks:
-    - name: Deploy registry fronetnd task
-      docker_container:
-        name: registry-frontend
-        state: started
-        image: konradkleine/docker-registry-frontend:v2
-        links: registry-ctn:registry-ctn
-        ports:
-          - "80:80"
-        env:
-          ENV_DOCKER_REGISTRY_HOST: registry-ctn
-          ENV_DOCKER_REGISTRY_PORT: "5000"
-          FRONTEND_BROWSE_ONLY_MODE: "false"
 # ----------------------------------------------------------
 #                LOCAL build AND PUSH TO REGISTRY images VM
 # ----------------------------------------------------------
@@ -190,15 +186,16 @@
 
     - name: Push api to docker private registry task
       docker_image:
-        name: 172.16.203.146:8000/simple-api
+        name: 172.16.203.147:8000/simple-api
         tag: v1
         push: yes
         source: local
 
-    - name: Push php app to docker private registry task
+    - name: Tag php apache app image and push to registry task
       docker_image:
-        name: 172.16.203.146:8000/php
-        tag: apache
+        name: php:apache
+        repository: 172.16.203.147:8000/php:apache
+        force_tag: yes
         push: yes
         source: local
 
