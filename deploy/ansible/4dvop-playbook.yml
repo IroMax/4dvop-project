@@ -274,6 +274,19 @@
         cmd: clair-scanner --clair="http://clair:6060" --ip jdac simple-api:latest
 
 ######################################
+# ----------------------------------------------------------
+#    GET Code From Repository on Deploy
+# ----------------------------------------------------------
+- name:  Get code
+  hosts: deploy
+  tags:
+    - test
+  tasks:
+    - name: Get code from private repo
+      git:
+         repo: 'http://192.168.48.11:4000/Djodane/4dvop.git'
+         dest: /home/centos
+         clone: yes
 
 # ----------------------------------------------------------
 #    BUILD images on Deploy and push to Registry
@@ -286,6 +299,7 @@
     - name: Build app and push it to a private repo
       docker_image:
         build:
+          #PATH à mettre à jour
           path: /home/centos/4dvop-project/4dvop-studentlist/simple_api
         name: 192.168.48.12:8000/simple-api
         tag: latest
