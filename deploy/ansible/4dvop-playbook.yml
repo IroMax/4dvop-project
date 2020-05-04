@@ -288,6 +288,7 @@
         build:
           path: /home/centos/4dvop-project/4dvop-studentlist/simple_api
         name: 192.168.48.12:8000/simple-api
+        label: simple-api
         tag: latest
         push: yes
         source: build
@@ -350,4 +351,4 @@
       docker_prune:
         images: yes
         images_filters:
-          image_name: 192.168.48.12:8000/simple-api
+          label: simple-api
