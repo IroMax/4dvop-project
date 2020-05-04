@@ -5,9 +5,9 @@ services:
     container_name: api
     build: /opt/bitnami/jenkins/jenkins_home/workspace/4dvop_master/appli/simple_api
     image: 192.168.48.12:8000/simple-api:latest
-    volumes:
-      - /opt/bitnami/jenkins/jenkins_home/workspace/4dvop_master/appli/simple_api:/usr/src/app
-      - /opt/bitnami/jenkins/jenkins_home/workspace/4dvop_master/appli/simple_api/student_age.json:/data/student_age.json
+#    volumes:
+#      - /opt/bitnami/jenkins/jenkins_home/workspace/4dvop_master/appli/simple_api:/usr/src/app
+#      - /opt/bitnami/jenkins/jenkins_home/workspace/4dvop_master/appli/simple_api/student_age.json:/data/student_age.json
     ports:
       - 5000:5000
 
