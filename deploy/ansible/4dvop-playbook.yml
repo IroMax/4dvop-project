@@ -53,37 +53,22 @@
         name: python-devel
         state: present
 
+
 # ----------------------------------------------------------
-#                APP REQUIREMENTS IN LOCAL
+#                REPOSITORY VM
 # ----------------------------------------------------------
-- name: Install docker and docker-compose in local
-  hosts: local
-  become: true
-  tags:
-    - build-app
-
-  pre_tasks:
-    - name: install Docker compose task in local
-      pip:
-        name: docker
-        state: present
-
-    - name: Docker-compose installation task in local
-      pip:
-        name: docker-compose
-        state: present
-
-
-
-# --------------------------------------------------------------
-#                REPOSITORY  VM - SETUP postgres for gogs image
-# --------------------------------------------------------------
-
-- name: setup postgres
+- name: Deploy Gos, private github repository
   hosts: repository
   become: true
   tags:
-    - repository
+    - gos-repository
+
+  pre_tasks:
+    - name: Install git
+      yum:
+        name: git
+        state: present
+        update_cache: yes
 
   tasks:
     - include_role:
@@ -101,31 +86,7 @@
           syslog-facility: local0
           tag: "{{ docker_postgres__name }}"
 
-# ----------------------------------------------------------
-#                REPOSITORY  VM
-# ----------------------------------------------------------
-- name: Install git
-  hosts: repository
-  become: true
-
-  tasks:
-    - name: Install git
-      yum:
-        name: git
-        state: present
-        update_cache: yes
-
-# ----------------------------------------------------------
-#                REPOSITORY VM
-# ----------------------------------------------------------
-- name: Deploy Gos, private github repository
-  hosts: repository
-  become: true
-  tags:
-    - gos
-
-  tasks:
-    - name: Deploy private repository task
+    - name: Deploy private repository (gogs) task
       docker_container:
         name: gogs-ctn
         image: gogs/gogs
@@ -145,7 +106,7 @@
   hosts: registry
   become: true
   tags:
-    - registry
+    - deploy-registry
 
   tasks:
     - name: Deploy private registry task
@@ -158,10 +119,9 @@
 
     - name: Deploy docker registry frontend task
       docker_container:
-        name: registry-frontend
+        name: registry-frontend-ctn
         state: started
         image: konradkleine/docker-registry-frontend:v2
-        links: registry-ctn:registry-ctn
         ports:
           - "80:80"
         env:
@@ -169,14 +129,42 @@
           ENV_DOCKER_REGISTRY_PORT: "5000"
           FRONTEND_BROWSE_ONLY_MODE: "false"
 
+    - name: Create a registry-network network and connect containers
+      docker_network:
+        name: registry-network
+        connected:
+          - registry-ctn
+          - registry-frontend-ctn
+
 # ----------------------------------------------------------
 #                LOCAL build AND PUSH TO REGISTRY images VM
 # ----------------------------------------------------------
 
-- name:  Build api and studentlist and push to registry
+- name:  Install requirements, Build api and studentlist and push to registry
   hosts: local
+  become: true
   tags:
     - build-push-app
+
+  pre_tasks:
+    - name: install Docker compose task in local
+      pip:
+        name: docker
+        state: present
+
+    - name: Docker-compose installation task in local
+      pip:
+        name: docker-compose
+        state: present
+
+      - name: Copy daemon json file to  daemon.json
+        copy:
+          src: /opt/bitnami/jenkins/jenkins_home/workspace/4dvop-project_complete-playbook/appli/daemon.json
+          dest: /etc/docker/daemon.json
+
+      - name: restart docker
+        shell: service docker restart
+
   tasks:
     - name: Build docker compose yaml file task
       docker_compose:
@@ -200,61 +188,32 @@
         source: local
 
 # ----------------------------------------------------------
-#                APPLI - Clone repository
+#                RUN APP
 # ----------------------------------------------------------
-#- name: Clone Repository
-#  hosts: app
-#  become: true
-#  tags:
-#    - run-app-
-#
-#  tasks:
-#    - name: clone app
-#      copy:
-#        src: /opt/bitnami/jenkins/jenkins_home/workspace/4dvop_master/appli
-#        dest: /home/centos
-#
-#    - name: clone daemon.json
-#      copy:
-#        src: /opt/bitnami/jenkins/jenkins_home/workspace/4dvop_master/appli/daemon.json
-#        dest: /etc/docker/daemon.json
-#
-#    - name: restart docker
-#      shell: service docker restart
+- name:  Run app
+  hosts: app
+  become: true
+  tags:
+    - run-app
 
+  tasks:
+    - name: Run simple api from private registry task
+      docker_container:
+        name: api-ctn
+        image: 172.16.203.147:8000/simple-api:v1
+        ports:
+          - "5001:5000"
 
-# ----------------------------------------------------------
-#                LOCAL build images VM
-# ----------------------------------------------------------
-#- name:  Build and push api and studentlist app
-#  hosts: local
-#  tags:
-#    - run-app-
-#  tasks:
-#    - name: Build an image and push it to a private registry
-#      docker_image:
-#        build:
-#          path: ../../../appli/simple_api
-#        name: 172.16.203.146:8000/simple-api
-#        tag: v1
-#        push: yes
-#        source: build
-#
-#    - name: Pull from registry
-#      docker_image:
-#        name: php:apache
-#        source: pull
+    - name: Run php apache from private registry task
+      docker_container:
+        name: app-ctn
+        image: 172.16.203.147:8000/php:apache
+        ports:
+          - "3000:80"
 
-# ----------------------------------------------------------
-#                RUN
-# ----------------------------------------------------------
-#- name:  Run app
-#  hosts: app
-#  tags:
-#    - run-app-
-#  tasks:
-#    - name: Run app task
-#      docker_compose:
-#        project_src: /home/centos/appli
-#        build: no
-#      register: output
+    - name: Create and connect api and app containers
+      docker_network:
+        name: app-network
+        connected:
+          - api-ctn
+          - app-ctn
