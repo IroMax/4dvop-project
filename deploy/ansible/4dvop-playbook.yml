@@ -332,9 +332,10 @@
   tags:
     - test
   tasks:
-    docker_container:
-      name: simple-api
-      state: stopped
+     - name: Stop api
+       docker_container:
+         name: simple-api
+         state: stopped
 
 # ----------------------------------------------------------
 #     CLEAN Deploy docker images
