@@ -2,7 +2,7 @@ version: '3'
 
 services:
   api:
-    build: ./
+    build: /opt/bitnami/jenkins/jenkins_home/workspace/4dvop-project_complete-playbook/appli/simple_api
     container_name: api
     image: simple-api
 #    volumes:
