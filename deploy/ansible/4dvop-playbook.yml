@@ -222,6 +222,17 @@
       register: output
 
 
+# ----------------------------------------------------------
+#                Check api
+# ----------------------------------------------------------
+- name:  curl check
+  hosts: deploy
+  tags:
+    - run-app-
+  tasks:
+    - name: Run check api
+      shell:
+        cmd: curl -u toto:python -X GET http://192.168.48.13:5000/pozos/api/v1.0/get_student_ages
 
 # ----------------------------------------------------------
 #                COPY Clair Docker-compose
