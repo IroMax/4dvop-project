@@ -127,7 +127,6 @@
         image: gogs/gogs
         state: started
         ports:
-#          - "23:22"
           - "4000:3000"
         networks:
         - name: app-network
@@ -232,18 +231,6 @@
 
 
 # ----------------------------------------------------------
-#                Check api
-# ----------------------------------------------------------
-- name:  curl check
-  hosts: deploy
-  tags:
-    - check-api
-  tasks:
-    - name: Run check api
-      shell:
-        cmd: curl -u toto:python -X GET http://192.168.48.13:5000/pozos/api/v1.0/get_student_ages
-
-# ----------------------------------------------------------
 #                COPY Clair Docker-compose
 # ----------------------------------------------------------
 - name: Copy Docker-compose
@@ -286,21 +273,80 @@
       shell:
         cmd: clair-scanner --clair="http://clair:6060" --ip jdac simple-api:latest
 
+######################################
+
+# ----------------------------------------------------------
+#    BUILD images on Deploy and push to Registry
+# ----------------------------------------------------------
+- name:  Build and push api and studentlist app
+  hosts: deploy
+  tags:
+    - test
+  tasks:
+    - name: Build app and push it to a private repo
+      docker_image:
+        build:
+          path: /home/centos/appli/simple_api
+        name: 192.168.48.12:8000/simple-api
+        tag: latest
+        push: yes
+        source: build
+
+# ----------------------------------------------------------
+#      RUN app for test api
+# ----------------------------------------------------------
+
+- name:  Run app
+  hosts: deploy
+  tags:
+    - test
+  tasks:
+    - name: Run app task
+      docker_container:
+        name: simple-api
+        build: no
+        ports:
+          - "5000:5000"
+        volumes:
+          - ./appli/simple_api:/usr/src/app
+          - ./appli/simple_api/student_age.json:/data/student_age.json
+
+# ----------------------------------------------------------
+#      TEST api
+# ---------------------------------------------------------- 
+- name:  curl check
+  hosts: deploy
+  tags:
+    - test
+  tasks:
+    - name: Run check api
+      shell:
+        cmd: curl -u toto:python -X GET http://192.168.48.10:5000/pozos/api/v1.0/get_student_ages
+
+# ----------------------------------------------------------
+#      STOP api
+# ---------------------------------------------------------- 
+
+- name: Stop simple api container
+  hosts: deploy
+  tags:
+    - test
+  tasks:
+    docker_container:
+      name: simple-api
+      state: stopped
 
 # ----------------------------------------------------------
 #     CLEAN Deploy docker images
 # ----------------------------------------------------------
 
-#- name:  Clean images
-#  hosts: app
-#  tags:
-#    - clean-images
-#  tasks:
-#    - name: Clean images
-#      docker_prune:
-#        build:
-#          path: /home/centos/appli/simple_api
-#        name: 192.168.48.12:8000/simple-api
-#        tag: v1
-#        push: yes
-#        source: build
+- name:  Clean images
+  hosts: app
+  tags:
+    - test
+  tasks:
+    - name: Clean images
+      docker_prune:
+        images: yes
+        images_filter:
+          repository: 192.168.48.12:8000/simple-api
