@@ -123,7 +123,7 @@
         state: started
         image: konradkleine/docker-registry-frontend:v2
         ports:
-          - "80:80"
+          - "90:80"
         env:
           ENV_DOCKER_REGISTRY_HOST: registry-ctn
           ENV_DOCKER_REGISTRY_PORT: "5000"
