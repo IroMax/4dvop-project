@@ -30,21 +30,23 @@
 # ----------------------------------------------------------
 #      Install prerequisites on Application and Deploy
 # ----------------------------------------------------------
-- name: Install docker on app server
-  hosts: all:!jdac
+  
+- name: Install docker on jdac
+  hosts: jdac
   become: true
   tags:
     - inst-prerequisites
 
-  tasks:
-    - name: Install epel-release-app
-      yum:
-        name: epel-release
-        state: latest
+    - name: Install docker
+      pip:
+        name: docker
+    
+    - name: Install docker-compose
+      pip:
+        name: docker-compose
 
-
-- name: Install docker on app server
-  hosts: all
+- name: Install docker 
+  hosts: all:!jdac
   become: true
   tags:
     - inst-prerequisites
@@ -54,6 +56,11 @@
       yum:
         name: "@Development tools"
         state: present
+
+    - name: Install epel-release-app
+      yum:
+        name: epel-release
+        state: latest
 
     - name: Python-devel
       yum:
@@ -73,6 +80,7 @@
     - name: Install docker-compose
       pip:
         name: docker-compose
+
 
 
 
