@@ -44,7 +44,7 @@ pipeline {
         sh 'ansible-playbook -i ./deploy/ansible/inventory ./deploy/ansible/4dvop-playbook.yml --tags run-simple-api'
       }
     }
-    stage('Test simple-api on Build System, stop and clean') {
+    stage('Test simple-api on Build System ans stop') {
       steps {
         echo 'Hello world'
         sh 'ansible-playbook -i ./deploy/ansible/inventory ./deploy/ansible/4dvop-playbook.yml --tags test-simple-api'
@@ -54,6 +54,11 @@ pipeline {
       steps {
         echo 'Hello world'
 //        sh 'ansible-playbook -i ./deploy/ansible/inventory ./deploy/ansible/4dvop-playbook.yml --tags clair'
+      }
+    stage('Validate image with Clair on Build System') {
+      steps {
+        echo 'Hello world'
+        sh 'ansible-playbook -i ./deploy/ansible/inventory ./deploy/ansible/4dvop-playbook.yml --tags push-images'
       }
     }
     stage('Deploy app from Build System on App server') {
