@@ -1,10 +1,10 @@
 ---
 
 # ----------------------------------------------------------
-#                ALL VM
+#     Install prerequisites on Registry and Repository
 # ----------------------------------------------------------
 - name: Install docker
-  hosts: all:!app,deploy
+  hosts: registry,repository
   become: true
   tags:
     - inst-prerequisites
@@ -28,7 +28,7 @@
         name: geerlingguy.docker
 
 # ----------------------------------------------------------
-#                APP REQUIREMENTS
+#      Install prerequisites on Application and Deploy
 # ----------------------------------------------------------
 
 - name: Install docker on app server
@@ -66,10 +66,27 @@
     - name: Install docker-compose
       pip:
         name: docker-compose
+
         
+# ----------------------------------------------------------
+#      Install git prerequisite on Repository
+# ---------------------------------------------------------- 
+
+- name: Install GIT on Repository
+  hosts: repository
+  become: true
+  tags:
+    - inst-prerequisites
+
+  tasks:
+    - name: Install git
+      yum:
+        name: git
+        state: present
+        update_cache: yes
 
 # --------------------------------------------------------------
-#                REPOSITORY  VM - SETUP postgres for gogs image
+#     RUN REPOSITORY DATABSE
 # --------------------------------------------------------------
 
 - name: setup postgres
@@ -93,23 +110,10 @@
           syslog-facility: local0
           tag: "{{ docker_postgres__name }}"
 
-# ----------------------------------------------------------
-#                REPOSITORY  VM
-# ---------------------------------------------------------- 
-- name: Install git
-  hosts: repository
-  become: true
-  tags:
-    - deploy-repository
-  tasks:
-    - name: Install git
-      yum:
-        name: git
-        state: present
-        update_cache: yes
+
 
 # ----------------------------------------------------------
-#                REPOSITORY VM
+#     RUN REPOSITORY GOS
 # ----------------------------------------------------------
 - name: Deploy Gos, private github repository
   hosts: repository
@@ -123,7 +127,7 @@
         image: gogs/gogs
         state: started
         ports:
-          - "23:22"
+#          - "23:22"
           - "4000:3000"
         networks:
         - name: app-network
@@ -131,7 +135,7 @@
 
 
 # ----------------------------------------------------------
-#                REGISTRY VM
+#    RUN REGISTRY VM
 # ----------------------------------------------------------
 - name: Deploy registry, private docker registry
   hosts: registry
@@ -165,7 +169,7 @@
           ENV_DOCKER_REGISTRY_HOST: registry-ctn
           ENV_DOCKER_REGISTRY_PORT: "5000"
           FRONTEND_BROWSE_ONLY_MODE: "false"
-
+   
 # ----------------------------------------------------------
 #                APPLI - Clone repository
 # ----------------------------------------------------------
@@ -281,3 +285,22 @@
     - name: Run clair job
       shell:
         cmd: clair-scanner --clair="http://clair:6060" --ip jdac simple-api:latest
+
+
+# ----------------------------------------------------------
+#     CLEAN Deploy docker images
+# ----------------------------------------------------------
+
+#- name:  Clean images
+#  hosts: app
+#  tags:
+#    - clean-images
+#  tasks:
+#    - name: Clean images
+#      docker_prune:
+#        build:
+#          path: /home/centos/appli/simple_api
+#        name: 192.168.48.12:8000/simple-api
+#        tag: v1
+#        push: yes
+#        source: build
