@@ -2,9 +2,9 @@ version: '3'
 
 services:
   api:
-    build: ./
+#    build: ./
     container_name: api
-    image: 192.168.48.12:8000/simple-api:v1
+    image: 192.168.48.12:8000/simple-api:latest
     volumes:
       - ./simple_api:/usr/src/app
       - ./simple_api/student_age.json:/data/student_age.json
