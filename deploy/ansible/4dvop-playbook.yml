@@ -56,27 +56,22 @@
 # ----------------------------------------------------------
 #                APP REQUIREMENTS IN LOCAL
 # ----------------------------------------------------------
-#- name: Install docker on app server
-#  hosts: app
-#  become: true
-#  tags:
-#    - run-app-
-#
-#  pre_tasks:
-#    - name: Install epel-release-app
-#      apt:
-#        name: epel-release
-#        state: latest
-#
-#    - name: install the 'Development tools' package group
-#      apt:
-#        name: "@Development tools"
-#        state: present
-#
-#    - name: Python-devel
-#      apt:
-#        name: python-devel
-#        state: present
+- name: Install docker and docker-compose in local
+  hosts: local
+  become: true
+  tags:
+    - build-app
+
+  pre_tasks:
+    - name: install Docker compose task in local
+      pip:
+        name: docker
+        state: present
+
+    - name: Docker-compose installation task in local
+      pip:
+        name: docker-compose
+        state: present
 
 
 
@@ -183,7 +178,7 @@
   tasks:
     - name: Build docker compose yaml file task
       docker_compose:
-        project_src: ./appli/simple_api
+        project_src: /opt/bitnami/jenkins/jenkins_home/workspace/4dvop-project_complete-playbook/appli/simple_api
         build: yes
       register: output
 
