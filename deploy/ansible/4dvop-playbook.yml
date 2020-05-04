@@ -30,9 +30,8 @@
 # ----------------------------------------------------------
 #      Install prerequisites on Application and Deploy
 # ----------------------------------------------------------
-
 - name: Install docker on app server
-  hosts: all
+  hosts: all:!jdac
   become: true
   tags:
     - inst-prerequisites
@@ -42,7 +41,15 @@
       yum:
         name: epel-release
         state: latest
-      
+
+
+- name: Install docker on app server
+  hosts: all
+  become: true
+  tags:
+    - inst-prerequisites
+
+  tasks:
     - name: install the 'Development tools' package group
       yum:
         name: "@Development tools"
