@@ -22,6 +22,5 @@ services:
       - 4dvop-studentlist_default
 
 networks:
-  default:
-    external:
-      name: 4dvop-studentlist_default
+  4dvop-studentlist_default:
+    external: true
