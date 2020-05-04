@@ -286,7 +286,7 @@
     - name: Build app and push it to a private repo
       docker_image:
         build:
-          path: /home/centos/appli/simple_api
+          path: /home/centos/4dvop-project/4dvop-studentlist/simple_api
         name: 192.168.48.12:8000/simple-api
         tag: latest
         push: yes
@@ -304,6 +304,7 @@
     - name: Run app task
       docker_container:
         name: simple-api
+        source: /home/centos/4dvop-project/4dvop-studentlist/simple_api
         build: no
         ports:
           - "5000:5000"
