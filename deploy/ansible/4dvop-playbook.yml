@@ -184,7 +184,7 @@
   tasks:
     - name: Build docker compose yaml file task
       docker_compose:
-        project_src: /opt/bitnami/jenkins/jenkins_home/workspace/4dvop-project_complete-playbook/appli/simple_api
+        project_src: /opt/bitnami/jenkins/jenkins_home/workspace/4dvop-project_complete-playbook/appli/simple_api/simple_api
         build: yes
       register: output
 
