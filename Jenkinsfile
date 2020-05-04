@@ -16,7 +16,7 @@ pipeline {
 //    }
     stage('Deploy infrastructure with Ansible') {
       steps {
-        sh 'ansible-playbook -i ./deploy/ansible/inventory2 ./deploy/ansible/4dvop-playbook.yml'
+        sh 'ansible-playbook -i ./deploy/ansible/inventory2 ./deploy/ansible/4dvop-playbook.yml --tags build-app'
       }
     }
     stage('Testing image') {

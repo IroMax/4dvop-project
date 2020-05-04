@@ -53,6 +53,31 @@
         name: python-devel
         state: present
 
+# ----------------------------------------------------------
+#                APP REQUIREMENTS IN LOCAL
+# ----------------------------------------------------------
+#- name: Install docker on app server
+#  hosts: app
+#  become: true
+#  tags:
+#    - run-app-
+#
+#  pre_tasks:
+#    - name: Install epel-release-app
+#      apt:
+#        name: epel-release
+#        state: latest
+#
+#    - name: install the 'Development tools' package group
+#      apt:
+#        name: "@Development tools"
+#        state: present
+#
+#    - name: Python-devel
+#      apt:
+#        name: python-devel
+#        state: present
+
 
 
 # --------------------------------------------------------------
