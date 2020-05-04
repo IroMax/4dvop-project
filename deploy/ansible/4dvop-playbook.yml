@@ -196,11 +196,11 @@
         source: local
 
     - name: Push php app to docker private registry task
-        docker_image:
-          name: 172.16.203.146:8000/php
-          tag: apache
-          push: yes
-          source: local
+      docker_image:
+        name: 172.16.203.146:8000/php
+        tag: apache
+        push: yes
+        source: local
 
 # ----------------------------------------------------------
 #                APPLI - Clone repository
