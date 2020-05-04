@@ -168,7 +168,142 @@
           ENV_DOCKER_REGISTRY_HOST: registry-ctn
           ENV_DOCKER_REGISTRY_PORT: "5000"
           FRONTEND_BROWSE_ONLY_MODE: "false"
-   
+
+# ----------------------------------------------------------
+#    GET Code From Repository on Deploy
+# ----------------------------------------------------------
+- name:  Get code
+  hosts: deploy
+  tags:
+    - get-code
+  tasks:
+    - name: Get code from private repo
+      git:
+         repo: 'http://192.168.48.11:4000/Djodane/4dvop.git'
+         dest: /app
+         clone: yes
+
+# ----------------------------------------------------------
+#    BUILD images on Deploy and push to Registry
+# ----------------------------------------------------------
+- name:  Build and push api and studentlist app
+  hosts: deploy
+  tags:
+    - build-simple-api
+  tasks:
+    - name: Build app and push it to a private repo
+      docker_image:
+        build:
+          path: /app/appli/simple_api
+        name: 192.168.48.12:8000/simple-api
+        tag: latest
+        push: yes
+        source: build
+
+# ----------------------------------------------------------
+#      RUN app on Deploy for test api
+# ----------------------------------------------------------
+
+- name:  Run app
+  hosts: deploy
+  tags:
+    - run-simple-api
+  tasks:
+    - name: Run app task
+      docker_container:
+        name: simple-api
+        image: simple-api:latest
+        ports:
+          - "5001:5000"
+        volumes:
+          - /app/appli/simple_api:/usr/src/app
+          - /app/appli/simple_api/student_age.json:/data/student_age.json
+
+# ----------------------------------------------------------
+#      TEST api from Deploy
+# ---------------------------------------------------------- 
+- name:  curl check
+  hosts: deploy
+  tags:
+    - test-simple-api
+  tasks:
+    - name: Run check api
+      shell:
+        cmd: curl -u toto:python -X GET http://192.168.48.10:5001/pozos/api/v1.0/get_student_ages
+
+# ----------------------------------------------------------
+#      STOP api container from Deploy
+# ---------------------------------------------------------- 
+
+- name: Stop simple api container
+  hosts: deploy
+  tags:
+    - test-simple-api
+  tasks:
+     - name: Stop api
+       docker_container:
+         name: simple-api
+         state: stopped
+
+# ----------------------------------------------------------
+#     CLEAN Deploy docker image simple-api
+# ----------------------------------------------------------
+
+- name:  Clean images
+  hosts: app
+  tags:
+    - test-simple-api
+  tasks:
+    - name: Clean images
+      docker_image:
+        name: 192.168.48.12:8000/simple-api
+        state: absent
+
+# ----------------------------------------------------------
+#                COPY Clair Docker-compose
+# ----------------------------------------------------------
+- name: Copy Docker-compose
+  hosts: deploy
+  become: true
+  tags:
+    - clair
+    
+  tasks:
+    - name: Copy clair docker-compose
+      copy:
+        src: /app/deploy/clair-docker-compose.yaml
+        dest: /home/centos/docker-compose.yaml
+
+
+# ----------------------------------------------------------
+#                CLAIR SCAN Build
+# ----------------------------------------------------------
+- name:  Clair Scan
+  hosts: deploy
+  tags:
+    - clair
+  tasks:
+    - name: Run clair task
+      docker_compose:
+        project_src: /home/centos
+        build: yes
+      register: output
+
+
+# ----------------------------------------------------------
+#                CLAIR SCAN Launch
+# ----------------------------------------------------------
+- name:  Clair launch
+  hosts: jdac
+  tags:
+    - clair
+  tasks:
+    - name: Run clair job
+      shell:
+        cmd: clair-scanner --clair="http://clair:6060" --ip jdac simple-api:latest
+        
+
+###############
 # ----------------------------------------------------------
 #                APPLI - Clone repository
 # ----------------------------------------------------------
@@ -230,136 +365,6 @@
       register: output
 
 
-# ----------------------------------------------------------
-#                COPY Clair Docker-compose
-# ----------------------------------------------------------
-- name: Copy Docker-compose
-  hosts: deploy
-  become: true
-  tags:
-    - deploy-clair
-    
-  tasks:
-    - name: Copy clair docker-compose
-      copy:
-        src: /opt/bitnami/jenkins/jenkins_home/workspace/4dvop_master/deploy/clair-docker-compose.yaml
-        dest: /home/centos/docker-compose.yaml
 
-
-# ----------------------------------------------------------
-#                CLAIR SCAN Build
-# ----------------------------------------------------------
-- name:  Clair Scan
-  hosts: deploy
-  tags:
-    - deploy-clair
-  tasks:
-    - name: Run clair task
-      docker_compose:
-        project_src: /home/centos
-        build: yes
-      register: output
-
-
-# ----------------------------------------------------------
-#                CLAIR SCAN Launch
-# ----------------------------------------------------------
-- name:  Clair launch
-  hosts: jdac
-  tags:
-    - deploy-clair
-  tasks:
-    - name: Run clair job
-      shell:
-        cmd: clair-scanner --clair="http://clair:6060" --ip jdac simple-api:latest
 
 ######################################
-# ----------------------------------------------------------
-#    GET Code From Repository on Deploy
-# ----------------------------------------------------------
-- name:  Get code
-  hosts: deploy
-  tags:
-    - test
-  tasks:
-    - name: Get code from private repo
-      git:
-         repo: 'http://192.168.48.11:4000/Djodane/4dvop.git'
-         dest: /app
-         clone: yes
-
-# ----------------------------------------------------------
-#    BUILD images on Deploy and push to Registry
-# ----------------------------------------------------------
-- name:  Build and push api and studentlist app
-  hosts: deploy
-  tags:
-    - test
-  tasks:
-    - name: Build app and push it to a private repo
-      docker_image:
-        build:
-          path: /app/appli/simple_api
-        name: 192.168.48.12:8000/simple-api
-        tag: latest
-        push: yes
-        source: build
-
-# ----------------------------------------------------------
-#      RUN app for test api
-# ----------------------------------------------------------
-
-- name:  Run app
-  hosts: deploy
-  tags:
-    - test
-  tasks:
-    - name: Run app task
-      docker_container:
-        name: simple-api
-        image: simple-api:latest
-        ports:
-          - "5001:5000"
-        volumes:
-          - /app/appli/simple_api:/usr/src/app
-          - /app/appli/simple_api/student_age.json:/data/student_age.json
-
-# ----------------------------------------------------------
-#      TEST api
-# ---------------------------------------------------------- 
-- name:  curl check
-  hosts: deploy
-  tags:
-    - test
-  tasks:
-    - name: Run check api
-      shell:
-        cmd: curl -u toto:python -X GET http://192.168.48.10:5001/pozos/api/v1.0/get_student_ages
-
-# ----------------------------------------------------------
-#      STOP api
-# ---------------------------------------------------------- 
-
-- name: Stop simple api container
-  hosts: deploy
-  tags:
-    - test
-  tasks:
-     - name: Stop api
-       docker_container:
-         name: simple-api
-         state: stopped
-
-# ----------------------------------------------------------
-#     CLEAN Deploy docker images
-# ----------------------------------------------------------
-
-- name:  Clean images
-  hosts: app
-  tags:
-    - test
-  tasks:
-    - name: Clean images
-      docker_image:
-        name: 192.168.48.12:8000/simple-api
-        state: absent

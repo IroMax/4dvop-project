@@ -23,37 +23,44 @@ pipeline {
     stage('Deploy Registry') {
       steps {
         echo 'Hello world'
-//        sh 'ansible-playbook -i ./deploy/ansible/inventory ./deploy/ansible/4dvop-playbook.yml --tags deploy-registry'
+        sh 'ansible-playbook -i ./deploy/ansible/inventory ./deploy/ansible/4dvop-playbook.yml --tags deploy-registry'
       }
     }
     stage('Deploy Repository') {
       steps {
         echo 'Hello world'
-//        sh 'ansible-playbook -i ./deploy/ansible/inventory ./deploy/ansible/4dvop-playbook.yml --tags deploy-repository'
+        sh 'ansible-playbook -i ./deploy/ansible/inventory ./deploy/ansible/4dvop-playbook.yml --tags deploy-repository'
       }
     }
-    stage('Run simple api container') {
+    stage('Get Code on Build System') {
       steps {
         echo 'Hello world'
-//        sh 'ansible-playbook -i ./deploy/ansible/inventory ./deploy/ansible/4dvop-playbook.yml --tags run-app'
+        sh 'ansible-playbook -i ./deploy/ansible/inventory ./deploy/ansible/4dvop-playbook.yml --tags get-code'
       }
     }
-    stage('Testing the api') {
+    stage('Build simple-api on Build System and push to Registry') {
       steps {
         echo 'Hello world'
-//        sh 'ansible-playbook -i ./deploy/ansible/inventory ./deploy/ansible/4dvop-playbook.yml --tags check-app'
+        sh 'ansible-playbook -i ./deploy/ansible/inventory ./deploy/ansible/4dvop-playbook.yml --tags build-simple-api'
       }
     }
-    stage('Validate image with Clair') {
+
+    stage('Run simple-api container on Build System') {
       steps {
         echo 'Hello world'
-//        sh 'ansible-playbook -i ./deploy/ansible/inventory ./deploy/ansible/4dvop-playbook.yml --tags deploy-clair'
+        sh 'ansible-playbook -i ./deploy/ansible/inventory ./deploy/ansible/4dvop-playbook.yml --tags run-simple-api'
       }
     }
-    stage('test') {
+    stage('Test simple-api on Build System, stop and clean') {
       steps {
         echo 'Hello world'
-        sh 'ansible-playbook -i ./deploy/ansible/inventory ./deploy/ansible/4dvop-playbook.yml --tags test'
+        sh 'ansible-playbook -i ./deploy/ansible/inventory ./deploy/ansible/4dvop-playbook.yml --tags test-simple-api'
+      }
+    }
+    stage('Validate image with Clair on Build System') {
+      steps {
+        echo 'Hello world'
+        sh 'ansible-playbook -i ./deploy/ansible/inventory ./deploy/ansible/4dvop-playbook.yml --tags clair'
       }
     }
     stage('Run security testing with Arachni') {
