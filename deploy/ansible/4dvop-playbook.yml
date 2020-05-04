@@ -14,7 +14,7 @@
       yum:
         name: epel-release
         state: latest
-      
+
     - name: Install python pip
       yum:
         name: python-pip
@@ -24,7 +24,7 @@
         name: docker
 
   tasks:
-    - include_role: 
+    - include_role:
         name: geerlingguy.docker
 
 # ----------------------------------------------------------
@@ -42,7 +42,7 @@
       yum:
         name: epel-release
         state: latest
-      
+
     - name: install the 'Development tools' package group
       yum:
         name: "@Development tools"
@@ -53,7 +53,7 @@
         name: python-devel
         state: present
 
-        
+
 
 # --------------------------------------------------------------
 #                REPOSITORY  VM - SETUP postgres for gogs image
@@ -64,7 +64,7 @@
   become: true
 
   tasks:
-    - include_role: 
+    - include_role:
         name: levonet.docker_postgres
       vars:
         docker_postgres__name: 4dvop-pg-ctn
@@ -81,7 +81,7 @@
 
 # ----------------------------------------------------------
 #                REPOSITORY  VM
-# ---------------------------------------------------------- 
+# ----------------------------------------------------------
 - name: Install git
   hosts: repository
   become: true
@@ -117,23 +117,23 @@
 # ----------------------------------------------------------
 #                REGISTRY VM
 # ----------------------------------------------------------
-- name: Deploy registry, private docker registry
+- name: Deploy docker private registry
   hosts: registry
   become: true
-  
+
   tasks:
-    - name: Deploy private repository task
+    - name: Deploy private registry task
       docker_container:
         name: registry-ctn
         image: registry
         state: started
         ports:
           - "8000:5000"
-          
+
 - name: Deploy registry frontend
   hosts: registry
   become: true
-  
+
   tasks:
     - name: Deploy registry fronetnd task
       docker_container:
@@ -156,7 +156,7 @@
   become: true
   tags:
     - run-app-
-    
+
   tasks:
     - name: clone app
       copy:
@@ -180,22 +180,22 @@
   tags:
     - run-app-
   tasks:
-    - name: Build an image and push it to a private repo
+    - name: Build an image and push it to a private registry
       docker_image:
         build:
           path: /home/centos/appli/simple_api
-        name: 192.168.48.12:8000/simple-api
+        name: 172.16.203.146:8000/simple-api
         tag: v1
         push: yes
         source: build
-    
+
     - name: Pull from registry
       docker_image:
         name: php:apache
         source: pull
 
 # ----------------------------------------------------------
-#                RUN 
+#                RUN
 # ----------------------------------------------------------
 - name:  Run app
   hosts: app
