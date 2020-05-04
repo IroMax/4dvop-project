@@ -304,8 +304,7 @@
     - name: Run app task
       docker_container:
         name: simple-api
-        image: 
-          - simple-api
+        image: simple-api:latest
         ports:
           - "5000:5000"
         volumes:
