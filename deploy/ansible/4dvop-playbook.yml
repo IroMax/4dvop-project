@@ -348,6 +348,6 @@
     - test
   tasks:
     - name: Clean images
-      docker_prune:
-        images: yes
-        images_filters: label=simple-api
+      docker_image:
+        name: 192.168.48.12:8000/simple-api
+        state: absent
