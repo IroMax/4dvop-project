@@ -56,7 +56,7 @@ pipeline {
 //        sh 'ansible-playbook -i ./deploy/ansible/inventory ./deploy/ansible/4dvop-playbook.yml --tags clair'
       }
     }
-    stage('Validate image with Clair on Build System') {
+    stage('Push images to registry from Build System') {
       steps {
         echo 'Hello world'
         sh 'ansible-playbook -i ./deploy/ansible/inventory ./deploy/ansible/4dvop-playbook.yml --tags push-images'
