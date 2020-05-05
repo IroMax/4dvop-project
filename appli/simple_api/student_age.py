@@ -9,7 +9,9 @@ from flask import g, session, redirect, url_for
 from flask_simpleldap import LDAP
 import json
 import os
+import logging
 
+logging.basicConfig()
 auth = HTTPBasicAuth()
 app = Flask(__name__)
 app.debug = True
@@ -27,7 +29,7 @@ def unauthorized():
 
 try:
     student_age_file_path
-    student_age_file_path  = os.environ['student_age_file_path'] 
+    student_age_file_path  = os.environ['student_age_file_path']
 except NameError:
     student_age_file_path  = '/data/student_age.json'
 
@@ -49,7 +51,7 @@ def get_student_age(student_name):
       del student_age[student_name]
       with open(student_age_file_path, 'w') as student_age_file:
         json.dump(student_age, student_age_file, indent=4, ensure_ascii=False)
-    return age 
+    return age
 @app.errorhandler(404)
 def not_found(error):
     return make_response(jsonify({'error': 'Not found'}), 404)
