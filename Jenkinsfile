@@ -9,21 +9,25 @@ pipeline {
     }
     stage('Install prerequisites on servers') {
       steps {
+      echo 'Hello world'
        //sh 'ansible-playbook -i ./deploy/ansible/inventory2 ./deploy/ansible/4dvop-playbook.yml --tags inst-prerequisites'
       }
     }
     stage('Deploy Registry') {
       steps {
+      echo 'Hello world'
        //sh 'ansible-playbook -i ./deploy/ansible/inventory2 ./deploy/ansible/4dvop-playbook.yml --tags deploy-registry'
       }
     }
     stage('Deploy Repository') {
       steps {
+      echo 'Hello world'
        //sh 'ansible-playbook -i ./deploy/ansible/inventory2 ./deploy/ansible/4dvop-playbook.yml --tags deploy-repository'
       }
     }
     stage('Get Code on Build System') {
       steps {
+      echo 'Hello world'
        //sh 'ansible-playbook -i ./deploy/ansible/inventory2 ./deploy/ansible/4dvop-playbook.yml --tags get-code'
       }
     }
