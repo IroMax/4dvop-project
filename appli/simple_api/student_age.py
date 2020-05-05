@@ -9,9 +9,7 @@ from flask import g, session, redirect, url_for
 from flask_simpleldap import LDAP
 import json
 import os
-import logging
 
-logging.basicConfig()
 auth = HTTPBasicAuth()
 app = Flask(__name__)
 app.debug = True

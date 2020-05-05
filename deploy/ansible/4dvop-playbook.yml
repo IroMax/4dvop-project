@@ -1,17 +1,18 @@
 ---
 
-- name: Install docker on jdac
-  hosts: jdac
-  become: true
-  tags:
-    - inst-prerequisites
-  vars:
-    pip_install_packages:
-      - name: docker
-
-  roles:
-    - geerlingguy.pip
-    - docker-setup-role
+#- name: Install docker on jdac
+#  hosts: jdac
+#  become: true
+#  tags:
+#    - inst-prerequisites
+#  tasks:
+#    - name: Install docker
+#      pip:
+#        name: docker
+#
+#    - name: Install docker-compose
+#      pip:
+#        name: docker-compose
 
 - name: Install docker
   hosts: all:!jdac
@@ -139,10 +140,21 @@
   hosts: jdac
   tags:
     - build-simple-api
-  tasks:
+
+  pre_tasks:
+    - name: install Docker compose task in local
+      pip:
+        name: docker
+        state: present
+
+    - name: Docker-compose installation task in local
+      pip:
+        name: docker-compose
+        state: present
+
     - name: Build task
       docker_compose:
-        project_src: /opt/bitnami/jenkins/jenkins_home/workspace/4dvop-project_playbookv2/appli/build
+        project_src: /opt/bitnami/jenkins/jenkins_home/workspace/4dvop_master/appli/build
         build: yes
       register: output
 
