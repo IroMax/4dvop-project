@@ -3,12 +3,12 @@ version: '3'
 services:
   api:
     container_name: api
-    image: 192.168.48.12:8000/simple-api:latest
+    image: 172.16.203.147:8000/simple-api:latest
     ports:
       - 5000:5000
 
   website:
-    image: 192.168.48.12:8000/php:apache
+    image: 172.16.203.147:8000/php:apache
     container_name: app
     ports:
       - 80:80
