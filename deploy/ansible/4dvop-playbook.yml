@@ -5,14 +5,13 @@
   become: true
   tags:
     - inst-prerequisites
-  tasks:
-    - name: Install docker
-      pip:
-        name: docker
+  vars:
+    pip_install_packages:
+      - name: docker
 
-    - name: Install docker-compose
-      pip:
-        name: docker-compose
+  roles:
+    - geerlingguy.pip
+    - geerlingguy.docker
 
 - name: Install docker
   hosts: all:!jdac

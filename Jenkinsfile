@@ -9,8 +9,8 @@ pipeline {
     }
     stage('Install prerequisites on servers') {
       steps {
-      echo 'Hello world'
-       //sh 'ansible-playbook -i ./deploy/ansible/inventory2 ./deploy/ansible/4dvop-playbook.yml --tags inst-prerequisites'
+       echo 'Hello world'
+       sh 'ansible-playbook -i ./deploy/ansible/inventory2 ./deploy/ansible/4dvop-playbook.yml --tags inst-prerequisites'
       }
     }
     stage('Deploy Registry') {
