@@ -1,7 +1,8 @@
 FROM python:2.7-stretch
 LABEL maintainer="ROMAIN CHETAN-JEAN-PASCAL for 4DVOP project"
 
-COPY /opt/bitnami/jenkins/jenkins_home/workspace/4dvop-project_playbookv2/appli/simple_api/ /usr/src/app
+COPY . /usr/src/app
+RUN ls /usr/src/app
 COPY /opt/bitnami/jenkins/jenkins_home/workspace/4dvop-project_playbookv2/appli/simple_api/student_age.py .
 COPY /opt/bitnami/jenkins/jenkins_home/workspace/4dvop-project_playbookv2/appli/simple_api/student_age.json /data/
 
