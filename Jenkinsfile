@@ -12,7 +12,7 @@ pipeline {
         sh 'ansible-playbook -i ./deploy/ansible/inventory2 ./deploy/ansible/4dvop-playbook.yml --tags deploy-registry'
       }
     }
-    stage('Deploy repository image') {
+    stage('Deploy git repository gogs') {
       steps {
         sh 'ansible-playbook -i ./deploy/ansible/inventory2 ./deploy/ansible/4dvop-playbook.yml --tags deploy-repository'
       }

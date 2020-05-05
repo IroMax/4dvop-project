@@ -193,22 +193,22 @@
 #        source: local
 
 # ----------------------------------------------------------
-#                RUN APP
+#                RUN SIMPLE API - BUILD SYSTEM
 # ----------------------------------------------------------
-#- name:  Run app
-#  hosts: app
-#  become: true
-#  tags:
-#    - run-app
-#
-#  tasks:
-#    - name: Run simple api from private registry task
-#      docker_container:
-#        name: api-ctn
-#        image: 172.16.203.147:8000/simple-api:v1
-#        ports:
-#          - "5001:5000"
-#
+- name:  Run simple api
+  hosts: jdac
+  become: true
+  tags:
+    - run-simple-api
+
+  tasks:
+    - name: Run simple api from build system task
+      docker_container:
+        name: simple-api
+        image: 172.16.203.147:8000/simple-api:v1
+        ports:
+          - "5001:5000"
+
 #    - name: Run php apache from private registry task
 #      docker_container:
 #        name: app-ctn
