@@ -17,14 +17,14 @@ pipeline {
         sh 'ansible-playbook -i ./deploy/ansible/inventory2 ./deploy/ansible/4dvop-playbook.yml --tags deploy-repository'
       }
     }
-    stage('Build simple-api on Build System') {
+    stage('Build simple-api') {
       steps {
         sh 'ansible-playbook -i ./deploy/ansible/inventory2 ./deploy/ansible/4dvop-playbook.yml --tags build-simple-api-and-website'
       }
     }
-    stage('Validate image with Clair') {
+    stage('Run simple-api container') {
       steps {
-        echo 'Hello world'
+        sh 'ansible-playbook -i ./deploy/ansible/inventory2 ./deploy/ansible/4dvop-playbook.yml --tags run-simple-api'
       }
     }
     stage('push images to registry server') {
