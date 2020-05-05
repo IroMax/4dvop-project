@@ -152,9 +152,9 @@
         name: docker-compose
         state: present
 
-    - name: Build task
+    - name: Build simple-api and php:apache task
       docker_compose:
-        project_src: /opt/bitnami/jenkins/jenkins_home/workspace/4dvop_master/appli/build
+        project_src: /opt/bitnami/jenkins/jenkins_home/workspace/4dvop-project_playbookv2/appli/build
         build: yes
       register: output
 
