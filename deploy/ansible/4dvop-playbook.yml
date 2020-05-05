@@ -136,8 +136,8 @@
         src: /opt/bitnami/jenkins/jenkins_home/workspace/4dvop-project_complete-playbook/appli/daemon.json
         dest: /etc/docker/daemon.json
 
-    - name: restart docker
-      shell: service docker restart
+#    - name: restart docker
+#      shell: service docker restart
 
 # ----------------------------------------------------------
 #                LOCAL build AND PUSH TO REGISTRY images VM
