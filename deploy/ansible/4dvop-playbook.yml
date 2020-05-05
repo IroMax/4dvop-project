@@ -4,7 +4,7 @@
 #                ALL VM
 # ----------------------------------------------------------
 - name: Install docker
-  hosts: all:!build-system
+  hosts: all:!jdac
   become: true
   tags:
     - run-app-
@@ -106,8 +106,9 @@
         name: registry-frontend-ctn
         state: started
         image: konradkleine/docker-registry-frontend:v2
+        # run jdac with 8080 and change this to 80
         ports:
-          - "80:80"
+          - "8080:80"
         env:
           ENV_DOCKER_REGISTRY_HOST: registry-ctn
           ENV_DOCKER_REGISTRY_PORT: "5000"
@@ -144,7 +145,7 @@
 # ----------------------------------------------------------
 
 - name:  Install requirements, Build api and studentlist and push to registry
-  hosts: build-system
+  hosts: jdac
   become: true
   tags:
     - build-simple-api-and-website
@@ -171,7 +172,7 @@
 # ----------------------------------------------------------
 
 #- name:  Run simple api and studentlist app
-#  hosts: build-system
+#  hosts: jdac
 #  become: true
 #  tags:
 #    - run-simple-api-and-website
