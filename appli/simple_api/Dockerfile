@@ -1,6 +1,7 @@
 FROM python:2.7-stretch
 LABEL maintainer="ROMAIN CHETAN-JEAN-PASCAL for 4DVOP project"
 
+WORKDIR /usr/src/app
 RUN pwd
 RUN ls /usr/src/app
 COPY . /usr/src/app
