@@ -243,7 +243,7 @@
 
     - name: Run clair job
       shell:
-        cmd: clair-scanner --clair="http://clair:6060" --ip jdac simple-api:latest
+        cmd: clair-scanner --clair="http://clair:6060" --ip jdac 172.16.203.147:8000/simple-api:v1
 
 
 #    - name: Run php apache from private registry task
