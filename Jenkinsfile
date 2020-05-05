@@ -32,9 +32,9 @@ pipeline {
         sh 'ansible-playbook -i ./deploy/ansible/inventory2 ./deploy/ansible/4dvop-playbook.yml --tags run-simple-api'
       }
     }
-    stage('Run security testing with Arachni') {
+    stage('Validate image with Clair on Build System') {
       steps {
-        echo 'Hello world'
+        sh 'ansible-playbook -i ./deploy/ansible/inventory2 ./deploy/ansible/4dvop-playbook.yml --tags clair'
       }
     }
   }
