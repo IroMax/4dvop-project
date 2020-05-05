@@ -36,7 +36,7 @@
 
   tasks:
     - include_role:
-        name: geerlingguy.docker
+        name: docker-setup-role
 
 # ----------------------------------------------------------
 #                REPOSITORY VM
@@ -56,7 +56,7 @@
 
   tasks:
     - include_role:
-        name: levonet.docker_postgres
+        name: postgres-setup-role
       vars:
         docker_postgres__name: 4dvop-pg-ctn
         docker_postgres__image: postgres:11.1-alpine
