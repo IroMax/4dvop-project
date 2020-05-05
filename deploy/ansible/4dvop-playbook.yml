@@ -237,7 +237,7 @@
   tasks:
     - name: Run clair task
       docker_compose:
-        project_src: /opt/bitnami/jenkins/jenkins_home/workspace/4dvop-project_complete-playbook/appli/deploy/clair
+        project_src: /opt/bitnami/jenkins/jenkins_home/workspace/4dvop-project_complete-playbook/deploy/clair
         build: yes
       register: output
 
