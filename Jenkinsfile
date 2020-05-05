@@ -7,31 +7,19 @@ pipeline {
         sh 'ls -la'
       }
     }
-//    stage('Build api and studentlist app image') {
-//      steps {
-//        sh 'docker-compose build'
-//        sh 'docker images'
-//        sh 'docker ps -a'
-//      }
-//    }
-    stage('Deploy infrastructure with Ansible') {
+    stage('Deploy registry') {
       steps {
-        sh 'ansible-playbook -i ./deploy/ansible/inventory2 ./deploy/ansible/4dvop-playbook.yml'
+        sh 'ansible-playbook -i ./deploy/ansible/inventory2 ./deploy/ansible/4dvop-playbook.yml --tags deploy-registry'
       }
     }
-    stage('Testing image') {
+    stage('Deploy repository image') {
       steps {
-        echo 'Hello world'
+        sh 'ansible-playbook -i ./deploy/ansible/inventory2 ./deploy/ansible/4dvop-playbook.yml --tags deploy-repository'
       }
     }
-    stage('Run simple api container') {
+    stage('Build simple-api on Build System') {
       steps {
-        echo 'Hello world'
-      }
-    }
-    stage('Testing the api') {
-      steps {
-        echo 'Hello world'
+        sh 'ansible-playbook -i ./deploy/ansible/inventory2 ./deploy/ansible/4dvop-playbook.yml --tags build-simple-api-and-website'
       }
     }
     stage('Validate image with Clair') {
