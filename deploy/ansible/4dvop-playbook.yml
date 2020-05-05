@@ -222,10 +222,28 @@
       shell:
         cmd: curl -u toto:python -X GET http://localhost:5001/pozos/api/v1.0/get_student_ages
 
-    - name: Stop api
+    - name: delete api container
       docker_container:
         name: simple-api
-        state: stopped
+        state: absent
+
+# ----------------------------------------------------------
+#                CLAIR SCAN Build
+# ----------------------------------------------------------
+- name:  Clair Scan - Security testing
+  hosts: jdac
+  tags:
+    - clair
+  tasks:
+    - name: Run clair task
+      docker_compose:
+        project_src: /opt/bitnami/jenkins/jenkins_home/workspace/4dvop_master/deploy/clair
+        build: yes
+      register: output
+
+    - name: Run clair job
+      shell:
+        cmd: clair-scanner --clair="http://clair:6060" --ip jdac simple-api:latest
 
 
 #    - name: Run php apache from private registry task
