@@ -1,36 +1,5 @@
 ---
 
-# ----------------------------------------------------------
-#     Install prerequisites on Registry and Repository
-# ----------------------------------------------------------
-#- name: Install docker
-#  hosts: registry,repository
-#  become: true
-#  tags:
-#    - inst-prerequisites
-
-#  tasks:
-#    - name: Install epel-release
-#      yum:
-#        name: epel-release
-#        state: latest
-      
-#    - name: Install python pip
-#      yum:
-#        name: python-pip
-#        state: latest
-    
-#    - name: Install docker
-#      pip:
-#        name: docker
-  
-#    - include_role: 
-#        name: geerlingguy.docker
-
-# ----------------------------------------------------------
-#      Install prerequisites on Application and Deploy
-# ----------------------------------------------------------
-
 - name: Install docker on jdac
   hosts: jdac
   become: true
@@ -40,12 +9,12 @@
     - name: Install docker
       pip:
         name: docker
-    
+
     - name: Install docker-compose
       pip:
         name: docker-compose
 
-- name: Install docker 
+- name: Install docker
   hosts: all:!jdac
   become: true
   tags:
@@ -76,13 +45,10 @@
     - name: Install docker
       pip:
         name: docker
-    
+
     - name: Install docker-compose
       pip:
         name: docker-compose
-
-
-
 
 # ----------------------------------------------------------
 #     RUN REPOSITORY GOS AND POSTGRES
@@ -92,17 +58,17 @@
   become: true
   tags:
     - deploy-repository
-  
+
   pre_tasks:
     - name: Install git
       yum:
         name: git
         state: present
         update_cache: yes
-    
+
   tasks:
 
-    - include_role: 
+    - include_role:
         name: postgres-setup-role
       vars:
         docker_postgres__name: 4dvop-pg-ctn
@@ -128,7 +94,7 @@
         - name: app-network
         networks_cli_compatible: yes
 
-  
+
 
 # ----------------------------------------------------------
 #    RUN REGISTRY VM
@@ -137,7 +103,7 @@
   hosts: registry
   become: true
   tags:
-    - deploy-registry  
+    - deploy-registry
   tasks:
     - name: Deploy private repository task
       docker_container:
@@ -146,7 +112,7 @@
         state: started
         ports:
           - "8000:5000"
-          
+
     - name: Deploy registry frontend task
       docker_container:
         name: registry-frontend
@@ -168,34 +134,6 @@
           - registry-frontend
 
 # ----------------------------------------------------------
-#    GET Code From Repository on Deploy
-# ----------------------------------------------------------
-#- name:  Get code
-#  hosts: deploy
-#  tags:
-#    - get-code
-#  tasks:
-#    - name: Get code from private repo
-#      git:
-#         repo: 'http://192.168.48.11:4000/Djodane/4dvop'
-#         dest: /app
-#         clone: yes
-
-# ----------------------------------------------------------
-#    GET Code From Repository on appli
-# ----------------------------------------------------------
-#- name:  Get code
-#  hosts: app
-#  tags:
-#    - get-code
-#  tasks:
-#    - name: Get code from private repo
-#      git:
-#         repo: 'http://192.168.48.11:4000/Djodane/4dvop'
-#         dest: /app
-#         clone: yes
-
-# ----------------------------------------------------------
 #    BUILD simple-api and php:apache
 # ----------------------------------------------------------
 - name:  Build simple-api and php:apache
@@ -208,8 +146,6 @@
         project_src: /opt/bitnami/jenkins/jenkins_home/workspace/4dvop_master/appli/build
         build: yes
       register: output
-        
-
 
 
 # ----------------------------------------------------------
@@ -227,25 +163,22 @@
         image: simple-api:latest
         ports:
           - "5001:5000"
-#        volumes:
-#          - /opt/bitnami/jenkins/jenkins_home/workspace/4dvop_master/appli/simple_api:/usr/src/app
-#          - /app/appli/simple_api/student_age.json:/data/student_age.json
 
 # ----------------------------------------------------------
 #      TEST api from Deploy
-# ---------------------------------------------------------- 
+# ----------------------------------------------------------
 - name:  curl check
   hosts: deploy
   tags:
     - test-simple-api
   tasks:
     - name: Run check api
-      shell: 
+      shell:
         cmd: curl -u toto:python -X GET http://localhost:5001/pozos/api/v1.0/get_student_ages
 
 # ----------------------------------------------------------
 #      STOP api container from Deploy
-# ---------------------------------------------------------- 
+# ----------------------------------------------------------
 
 - name: Stop simple api container
   hosts: deploy
@@ -302,7 +235,7 @@
         tag: latest
         push: yes
         source: local
-      
+
     - name: Tag php apache app image and push to registry task
       docker_image:
         name: php:apache
@@ -337,20 +270,15 @@
 #  become: true
 #  tags:
 #    - run-app
-    
- # tasks:
- #   - name: move app
- #     copy:
- #       src: /opt/bitnami/jenkins/jenkins_home/workspace/4dvop_master/appli
- #       dest: /home/centos
 
+ # tasks:
 #    - name: copy daemon.json
 #      shell:
-#        cmd: cp /app/appli/daemon.json /etc/docker/daemon.json  
+#        cmd: cp /app/appli/daemon.json /etc/docker/daemon.json
 #    - name: copy daemon.json
 #      copy:
 #        src: /opt/bitnami/jenkins/jenkins_home/workspace/4dvop_master/appli/daemon.json
-#        dest: /etc/docker/daemon.json   
+#        dest: /etc/docker/daemon.json
 
 #    - name: restart docker
 #      shell: service docker restart
@@ -359,11 +287,11 @@
 # ----------------------------------------------------------
 #                DEPLOY app on App
 # ----------------------------------------------------------
-#- name:  Get Image 
+#- name:  Get Image
 #  hosts: app
 #  tags:
 #    - run-app
-#  tasks:    
+#  tasks:
 #    - name: Pull image
 #      docker_image:
 #        name: php:apache

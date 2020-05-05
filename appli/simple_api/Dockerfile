@@ -1,5 +1,5 @@
 FROM python:2.7-stretch
-LABEL maintainer="Romain SINET - romain.sinet@econocom.com"
+LABEL maintainer="ROMAIN CHETAN-JEAN-PASCAL for 4DVOP project"
 
 COPY . /usr/src/app
 COPY ./student_age.py .

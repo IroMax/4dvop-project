@@ -4,17 +4,12 @@ services:
   api:
     container_name: api
     image: 192.168.48.12:8000/simple-api:latest
- #   volumes:
- #     - ./simple_api:/usr/src/app
- #     - ./simple_api/student_age.json:/data/student_age.json
     ports:
       - 5000:5000
 
   website:
     image: 192.168.48.12:8000/php:apache
     container_name: app
-#    volumes:
-#      - ./website:/var/www/html
     ports:
       - 80:80
     depends_on:
