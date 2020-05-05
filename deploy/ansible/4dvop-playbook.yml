@@ -143,7 +143,7 @@
   tasks:
     - name: Build task
       docker_compose:
-        project_src: /opt/bitnami/jenkins/jenkins_home/workspace/4dvop_master/appli/build
+        project_src: /opt/bitnami/jenkins/jenkins_home/workspace/4dvop-project_playbookv2/appli/build
         build: yes
       register: output
 
@@ -202,7 +202,7 @@
   tasks:
     - name: Run clair task
       docker_compose:
-        project_src: /opt/bitnami/jenkins/jenkins_home/workspace/4dvop_master/deploy/clair
+        project_src: /opt/bitnami/jenkins/jenkins_home/workspace/4dvop-project_playbookv2/deploy/clair
         build: yes
       register: output
 
@@ -307,7 +307,7 @@
   tasks:
     - name: Copy Dockercompose file
       copy:
-        src: /opt/bitnami/jenkins/jenkins_home/workspace/4dvop_master/appli/docker-compose.yml
+        src: /opt/bitnami/jenkins/jenkins_home/workspace/4dvop-project_playbookv2/appli/run/docker-compose.yml
         dest: /home/centos/docker-compose.yml
 
     - name: Run app task
