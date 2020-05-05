@@ -9,22 +9,22 @@ pipeline {
     }
     stage('Install prerequisites on servers') {
       steps {
-       sh 'ansible-playbook -i ./deploy/ansible/inventory2 ./deploy/ansible/4dvop-playbook.yml --tags inst-prerequisites'
+       //sh 'ansible-playbook -i ./deploy/ansible/inventory2 ./deploy/ansible/4dvop-playbook.yml --tags inst-prerequisites'
       }
     }
     stage('Deploy Registry') {
       steps {
-       sh 'ansible-playbook -i ./deploy/ansible/inventory2 ./deploy/ansible/4dvop-playbook.yml --tags deploy-registry'
+       //sh 'ansible-playbook -i ./deploy/ansible/inventory2 ./deploy/ansible/4dvop-playbook.yml --tags deploy-registry'
       }
     }
     stage('Deploy Repository') {
       steps {
-       sh 'ansible-playbook -i ./deploy/ansible/inventory2 ./deploy/ansible/4dvop-playbook.yml --tags deploy-repository'
+       //sh 'ansible-playbook -i ./deploy/ansible/inventory2 ./deploy/ansible/4dvop-playbook.yml --tags deploy-repository'
       }
     }
     stage('Get Code on Build System') {
       steps {
-       sh 'ansible-playbook -i ./deploy/ansible/inventory2 ./deploy/ansible/4dvop-playbook.yml --tags get-code'
+       //sh 'ansible-playbook -i ./deploy/ansible/inventory2 ./deploy/ansible/4dvop-playbook.yml --tags get-code'
       }
     }
     stage('Build simple-api on Build System ') {
