@@ -209,6 +209,25 @@
         ports:
           - "5001:5000"
 
+
+# ----------------------------------------------------------
+#      TEST simple api and stop container - VM DEPLOY
+# ----------------------------------------------------------
+- name:  curl check
+  hosts: deploy
+  tags:
+    - test-simple-api
+  tasks:
+    - name: Run check api
+      shell:
+        cmd: curl -u toto:python -X GET http://localhost:5001/pozos/api/v1.0/get_student_ages
+
+    - name: Stop api
+        docker_container:
+          name: simple-api
+          state: stopped
+
+
 #    - name: Run php apache from private registry task
 #      docker_container:
 #        name: app-ctn

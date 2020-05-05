@@ -27,9 +27,9 @@ pipeline {
         sh 'ansible-playbook -i ./deploy/ansible/inventory2 ./deploy/ansible/4dvop-playbook.yml --tags run-simple-api'
       }
     }
-    stage('push images to registry server') {
+    stage('Test simple-api on Build System ans stop') {
       steps {
-        echo 'Hello world'
+        sh 'ansible-playbook -i ./deploy/ansible/inventory2 ./deploy/ansible/4dvop-playbook.yml --tags run-simple-api'
       }
     }
     stage('Run security testing with Arachni') {
