@@ -1,13 +1,9 @@
 FROM python:2.7-stretch
-LABEL maintainer="salah xxx@supinfo.com"
-
-COPY . /usr/src/app
+LABEL maintainer="305028@supinfo.com - 303417@supinfo.com - 226908@supinfo.com"
+WORKDIR /
 COPY ./student_age.py .
-COPY ./student_age.json /data/
-
-RUN apt-get update -y && apt-get install python-dev python3-dev libsasl2-dev python-dev libldap2-dev libssl-dev -y
-RUN pip install flask flask_httpauth flask_simpleldap python-dotenv
-
-CMD [ "python", "./student_age.py" ]
-
+RUN apt-get update -y && apt-get install python-dev python3-dev libsasl2-dev python-dev libldap2-dev libssl-dev -y \
+    && pip install flask flask_httpauth flask_simpleldap python-dotenv
+VOLUME ["/data"]
 EXPOSE 5000
+CMD [ "python", "./student_age.py" ]
