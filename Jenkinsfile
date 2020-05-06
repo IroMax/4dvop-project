@@ -12,27 +12,22 @@ pipeline {
         sh 'ansible-playbook -i ./deploy/ansible/inventory2 ./deploy/ansible/4dvop-playbook.yml --tags deploy-registry'
       }
     }
-    stage('Deploy git repository gogs') {
-      steps {
-        sh 'ansible-playbook -i ./deploy/ansible/inventory2 ./deploy/ansible/4dvop-playbook.yml --tags deploy-repository'
-      }
-    }
-    stage('Build simple-api') {
+    stage('Build api') {
       steps {
         sh 'ansible-playbook -i ./deploy/ansible/inventory2 ./deploy/ansible/4dvop-playbook.yml --tags build-simple-api-and-website'
       }
     }
-    stage('Run simple-api container') {
+    stage('Run api container') {
       steps {
         sh 'ansible-playbook -i ./deploy/ansible/inventory2 ./deploy/ansible/4dvop-playbook.yml --tags run-simple-api'
       }
     }
-    stage('Test simple-api on Build System ans stop') {
+    stage('Test api ans stop containers') {
       steps {
-        sh 'ansible-playbook -i ./deploy/ansible/inventory2 ./deploy/ansible/4dvop-playbook.yml --tags run-simple-api'
+        sh 'ansible-playbook -i ./deploy/ansible/inventory2 ./deploy/ansible/4dvop-playbook.yml --tags test-simple-api-stop'
       }
     }
-    stage('Validate image with Clair on Build System') {
+    stage('Validate image with Clair') {
       steps {
         sh 'ansible-playbook -i ./deploy/ansible/inventory2 ./deploy/ansible/4dvop-playbook.yml --tags clair'
       }

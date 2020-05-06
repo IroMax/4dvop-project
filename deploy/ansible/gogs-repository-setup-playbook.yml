@@ -1,0 +1,81 @@
+# ----------------------------------------------------------
+#                ALL VM
+# ----------------------------------------------------------
+- name: Install docker
+  hosts: all:!jdac
+  become: true
+  tags:
+    - deploy-repository
+
+  pre_tasks:
+    - name: Install epel-release
+      yum:
+        name: epel-release
+        state: latest
+
+    - name: install the 'Development tools' package group
+      yum:
+        name: "@Development tools"
+        state: present
+
+    - name: Python-devel
+      yum:
+        name: python-devel
+        state: present
+
+    - name: Install python pip
+      yum:
+        name: python-pip
+        state: latest
+
+    - name: Install docker
+      pip:
+        name: docker
+
+  tasks:
+    - include_role:
+        name: docker-setup-role
+
+# ----------------------------------------------------------------
+#                REPOSITORY VM - RUN REPOSITORY GOS AND POSTGRES
+# ---------------------------------------------------------------
+- name: Deploy Gos, private github repository
+  hosts: repository
+  become: true
+  tags:
+    - deploy-repository
+
+  pre_tasks:
+    - name: Install git
+      yum:
+        name: git
+        state: present
+        update_cache: yes
+
+  tasks:
+    - include_role:
+        name: postgres-setup-role
+      vars:
+        docker_postgres__name: 4dvop-pg-ctn
+        docker_postgres__image: postgres:11.1-alpine
+        docker_postgres__port: 5432
+        docker_postgres__superuser_name: superuser
+        docker_postgres__superuser_password: supersecret
+        docker_postgres__env:
+          POSTGRES_DB: 4dvop-db
+        docker_postgres__log_driver: syslog
+        docker_postgres__log_options:
+          syslog-facility: local0
+          tag: "{{ docker_postgres__name }}"
+
+    - name: Deploy private repository (gogs) task
+      docker_container:
+        name: gogs-ctn
+        image: gogs/gogs
+        state: started
+        ports:
+          - "23:22"
+          - "4000:3000"
+        networks:
+          - name: app-network
+        networks_cli_compatible: yes

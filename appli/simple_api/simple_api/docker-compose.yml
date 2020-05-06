@@ -5,9 +5,6 @@ services:
     build: /opt/bitnami/jenkins/jenkins_home/workspace/4dvop-project_complete-playbook/appli/simple_api/simple_api
     container_name: api
     image: 172.16.203.147:8000/simple-api:v1
-#    volumes:
-#      - ./simple_api:/usr/src/app
-#      - ./simple_api/student_age.json:/data/student_age.json
     ports:
       - 5001:5000
 

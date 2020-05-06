@@ -38,51 +38,6 @@
     - include_role:
         name: docker-setup-role
 
-# ----------------------------------------------------------------
-#                REPOSITORY VM - RUN REPOSITORY GOS AND POSTGRES
-# ---------------------------------------------------------------
-- name: Deploy Gos, private github repository
-  hosts: repository
-  become: true
-  tags:
-    - deploy-repository
-
-  pre_tasks:
-    - name: Install git
-      yum:
-        name: git
-        state: present
-        update_cache: yes
-
-  tasks:
-    - include_role:
-        name: postgres-setup-role
-      vars:
-        docker_postgres__name: 4dvop-pg-ctn
-        docker_postgres__image: postgres:11.1-alpine
-        docker_postgres__port: 5678
-        docker_postgres__superuser_name: superuser
-        docker_postgres__superuser_password: supersecret
-        docker_postgres__env:
-          POSTGRES_DB: 4dvop-db
-        docker_postgres__log_driver: syslog
-        docker_postgres__log_options:
-          syslog-facility: local0
-          tag: "{{ docker_postgres__name }}"
-
-    - name: Deploy private repository (gogs) task
-      docker_container:
-        name: gogs-ctn
-        image: gogs/gogs
-        state: started
-        ports:
-          - "23:22"
-          - "4000:3000"
-        networks:
-        - name: app-network
-        networks_cli_compatible: yes
-
-
 # ----------------------------------------------------------
 #                REGISTRY VM
 # ----------------------------------------------------------
@@ -106,7 +61,6 @@
         name: registry-frontend-ctn
         state: started
         image: konradkleine/docker-registry-frontend:v2
-        # run jdac with 8080 and change this to 80
         ports:
           - "8080:80"
         env:
@@ -121,30 +75,11 @@
           - registry-ctn
           - registry-frontend-ctn
 
-
-# --------------------------------------------------------------------------
-# SETUP docker registry security settings for pushing images - DEPLOY VM
-# --------------------------------------------------------------------------
-#- name:  Setup daemon registry security setting for pushing images
-#  hosts: deploy
-#  become: true
-#  tags:
-#    - registry-daemon
-#
-#  tasks:
-#    - name: Copy daemon json file to  deploy vm task
-#      copy:
-#        src: /opt/bitnami/jenkins/jenkins_home/workspace/4dvop-project_complete-playbook/appli/daemon.json
-#        dest: /etc/docker/daemon.json
-#
-#    - name: restart docker
-#      shell: service docker restart
-
-# ----------------------------------------------------------
+# -------------------------------------------------------------
 #                LOCAL build AND PUSH TO REGISTRY images VM
-# ----------------------------------------------------------
+# -------------------------------------------------------------
 
-- name:  Install requirements, Build api and studentlist and push to registry
+- name:  Install requirements, Build api and studentlist
   hosts: jdac
   become: true
   tags:
@@ -167,48 +102,6 @@
         project_src: /opt/bitnami/jenkins/jenkins_home/workspace/4dvop-project_complete-playbook/appli/simple_api/simple_api
         build: yes
       register: output
-# ----------------------------------------------------------
-#      RUN app on Build system
-# ----------------------------------------------------------
-
-#- name:  Run simple api and studentlist app
-#  hosts: jdac
-#  become: true
-#  tags:
-#    - run-simple-api-and-website
-#  tasks:
-#    - name: Push api to docker private registry task
-#      docker_image:
-#        name: 172.16.203.147:8000/simple-api
-#        tag: v1
-#        push: yes
-#        source: local
-#
-#    - name: Tag php apache app image and push to registry task
-#      docker_image:
-#        name: php:apache
-#        repository: 172.16.203.147:8000/php:apache
-#        force_tag: yes
-#        push: yes
-#        source: local
-
-# ----------------------------------------------------------
-#                RUN SIMPLE API - BUILD SYSTEM
-# ----------------------------------------------------------
-- name:  Run simple api
-  hosts: jdac
-  become: true
-  tags:
-    - run-simple-api
-
-  tasks:
-    - name: Run simple api from build system task
-      docker_container:
-        name: simple-api
-        image: 172.16.203.147:8000/simple-api:v1
-        ports:
-          - "5001:5000"
-
 
 # ----------------------------------------------------------
 #      TEST simple api and stop container - VM DEPLOY
@@ -216,15 +109,26 @@
 - name:  curl check
   hosts: deploy
   tags:
-    - test-simple-api
+    - test-simple-api-stop
   tasks:
     - name: Run check api
       shell:
         cmd: curl -u toto:python -X GET http://localhost:5001/pozos/api/v1.0/get_student_ages
 
-    - name: delete api container
-      docker_container:
-        name: simple-api
+# -----------------------------------------------------------------
+#                STOP API AND STUDENTLIST containers in JDAC VM
+# -----------------------------------------------------------------
+
+- name:  Stop Running containers (api and studentlist)
+  hosts: jdac
+  become: true
+  tags:
+    - test-simple-api-stop
+
+  tasks:
+    - name: Stop api and studentlist containers task
+      docker_compose:
+        project_src: /opt/bitnami/jenkins/jenkins_home/workspace/4dvop-project_complete-playbook/appli/simple_api/simple_api
         state: absent
 
 # ----------------------------------------------------------
