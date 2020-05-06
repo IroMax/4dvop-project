@@ -19,3 +19,9 @@ O
 appli/simple_api/student_age.py,c/d/cd34936987936ec61e65489e913eb935686504cd
 ^
 .appli/simple_api/simple_api/docker-compose.yml,9/4/94a84f4f7e24af6daf2b1f446a8ce0e2b972f8bf
+e
+5deploy/ansible/roles/docker-setup-role/tasks/main.yml,8/6/86d82d4074f7e1d97085809f1759bf5f6ecc0fb3
+K
+appli/simple_api/Dockerfile,e/7/e7487d5a43db92fcddbbed78a285cf62505a94a9
+P
+ deploy/clair/docker-compose.yaml,1/8/18d292e896abc1bb9eddfac0c3e9ef333b86c64d
