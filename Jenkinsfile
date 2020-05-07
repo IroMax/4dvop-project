@@ -68,8 +68,5 @@ pipeline {
         //sh 'docker images'
         //sh 'docker rmi -f $(docker images -a -q)'
       }
-      success{
-        echo "====++++Successfully completed++++===="
-      }
   }
 }
