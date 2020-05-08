@@ -33,35 +33,50 @@ pipeline {
       }
     }
     stage('Validate image with Clair') {
+          steps {
+            sh 'ansible-playbook -i ./deploy/ansible/inventory2 ./deploy/ansible/4dvop-playbook.yml --tags clair'
+          }
+        }
+    stage('Push images to private registry') {
       steps {
-        sh 'ansible-playbook -i ./deploy/ansible/inventory2 ./deploy/ansible/4dvop-playbook.yml --tags clair'
+        sh 'ansible-playbook -i ./deploy/ansible/inventory2 ./deploy/ansible/4dvop-playbook.yml --tags push-images'
       }
     }
+    stage('Deploy the applications') {
+          steps {
+            sh 'ansible-playbook -i ./deploy/ansible/inventory2 ./deploy/ansible/4dvop-playbook.yml --tags run-app'
+          }
+        }
+    stage('(E2E Tests)') {
+          steps {
+            sh 'ansible-playbook -i ./deploy/ansible/inventory2 ./deploy/ansible/4dvop-playbook.yml --tags e2e-testing'
+          }
+        }
   }
   post{
-  failure {
-  			script {
-  				def body = "<b>Jenkins failure</b><br>Project: 4DVOP-PROJECT <br>Build Number: ${env.BUILD_NUMBER} <br>URL de build: ${env.BUILD_URL}"
-  				def subject = "ERROR CI: Project name -> 4DVOP-PROJECT"
-  				def	dest = "305028@supinfo.com"
-  				mail bcc: '', body: body, cc: '', charset: 'UTF-8', from: '', mimeType: 'text/html', replyTo: '', subject: subject, to: dest;
-  			}
-  		}
-  		success {
-  			script {
-  					def currentBranch = env.BRANCH_NAME
-  					def body = "Hello, a new 4DVOP-PROJECT version available on ${currentBranch}"+
-  					"<br><br><b>Deployment Report : </b>"+
-  					"<br>&emsp;-Deployed Branch: ${env.BRANCH_NAME}"+
-  					"<br><br>Best Regards"
-
-  					def subject = "[CI:${currentBranch}] New 4DVOP-PROJECT version available"
-
-  					def dev = "305028@supinfo.com"
-
-  					mail bcc: '', body: body, cc: '', charset: 'UTF-8', from: '', mimeType: 'text/html', replyTo: '', subject: subject, to: dev;
-  			}
-  		}
+//   failure {
+//   			script {
+//   				def body = "<b>Jenkins failure</b><br>Project: 4DVOP-PROJECT <br>Build Number: ${env.BUILD_NUMBER} <br>URL de build: ${env.BUILD_URL}"
+//   				def subject = "ERROR CI: Project name -> 4DVOP-PROJECT"
+//   				def	dest = "305028@supinfo.com"
+//   				mail bcc: '', body: body, cc: '', charset: 'UTF-8', from: '', mimeType: 'text/html', replyTo: '', subject: subject, to: dest;
+//   			}
+//   		}
+//   		success {
+//   			script {
+//   					def currentBranch = env.BRANCH_NAME
+//   					def body = "Hello, a new 4DVOP-PROJECT version available on ${currentBranch}"+
+//   					"<br><br><b>Deployment Report : </b>"+
+//   					"<br>&emsp;-Deployed Branch: ${env.BRANCH_NAME}"+
+//   					"<br><br>Best Regards"
+//
+//   					def subject = "[CI:${currentBranch}] New 4DVOP-PROJECT version available"
+//
+//   					def dev = "305028@supinfo.com"
+//
+//   					mail bcc: '', body: body, cc: '', charset: 'UTF-8', from: '', mimeType: 'text/html', replyTo: '', subject: subject, to: dev;
+//   			}
+//   		}
       always{
         //echo 'delete working directory at the end'
         //deleteDir()
