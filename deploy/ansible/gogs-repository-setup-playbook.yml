@@ -102,7 +102,7 @@
       vars:
         docker_postgres__name: 4dvop-pg-ctn
         docker_postgres__image: postgres:11.1-alpine
-        docker_postgres__port: 5432
+        docker_postgres__port: 5433
         docker_postgres__superuser_name: superuser
         docker_postgres__superuser_password: supersecret
         docker_postgres__env:
