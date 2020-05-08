@@ -106,14 +106,14 @@
 # ----------------------------------------------------------
 #      TEST simple api and stop container - VM DEPLOY
 # ----------------------------------------------------------
-- name:  curl check
-  hosts: deploy
-  tags:
-    - test-simple-api-stop
-  tasks:
-    - name: Run check api
-      shell:
-        cmd: curl -u toto:python -X GET http://localhost:5001/pozos/api/v1.0/get_student_ages
+#- name:  curl check
+#  hosts: deploy
+#  tags:
+#    - test-simple-api-stop
+#  tasks:
+#    - name: Run check api
+#      shell:
+#        cmd: curl -u toto:python -X GET http://localhost:5001/pozos/api/v1.0/get_student_ages
 
 #uri:
 #  url: http://localhost:5001/pozos/api/v1.0/get_student_ages
