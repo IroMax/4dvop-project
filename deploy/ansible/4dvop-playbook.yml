@@ -197,10 +197,10 @@
         source: pull
 
     - name: Pull studentlist app images from private registry
-        docker_image:
-          name: 192.168.1.37:8000/php
-          tag: apache
-          source: pull
+      docker_image:
+        name: 192.168.1.37:8000/php
+        tag: apache
+        source: pull
 
     - name: Run api container
       docker_container:
@@ -210,11 +210,11 @@
           - "5001:5000"
 
     - name: Run studentlist frontend app container
-        docker_container:
-          name: app-ctn
-          image: 192.168.1.37:8000/php:apache
-          ports:
-            - "3000:80"
+      docker_container:
+        name: app-ctn
+        image: 192.168.1.37:8000/php:apache
+        ports:
+          - "3000:80"
 
 # ----------------------------------------------------------
 #      RUN SECURITY TESTING simple api and stop container - VM APP
