@@ -2,7 +2,7 @@ version: '3'
 
 services:
   api:
-    build: /opt/bitnami/jenkins/jenkins_home/workspace/4dvop-project_complete-playbook/appli/simple_api/simple_api
+    build: .
     container_name: api
     image: 192.168.1.37:8000/simple-api:v1
     volumes:
@@ -14,7 +14,7 @@ services:
     image: php:apache
     container_name: app
     volumes:
-      - ./website:/var/www/html
+      - "./website:/var/www/html"
     ports:
       - 3000:80
     depends_on:
