@@ -1,8 +1,10 @@
+---
+
 # ----------------------------------------------------------
 #                ALL VM
 # ----------------------------------------------------------
-- name: Install docker
-  hosts: all:!jdac
+- name: Docker installation on Repository VM
+  hosts: repository
   become: true
   tags:
     - deploy-repository
@@ -36,10 +38,28 @@
     - include_role:
         name: docker-setup-role
 
+
+- name:  Install requirements on JDAC container
+  hosts: jdac
+  become: true
+  tags:
+    - deploy-repository
+
+  pre_tasks:
+    - name: install Docker compose task in local
+      pip:
+        name: docker
+        state: present
+
+    - name: Docker-compose installation task in local
+      pip:
+        name: docker-compose
+        state: present
+
 # ----------------------------------------------------------------
 #                REPOSITORY VM - RUN REPOSITORY GOS AND POSTGRES
 # ---------------------------------------------------------------
-- name: Deploy Gos, private github repository
+- name: Deploy Gos, private github repository on repository VM
   hosts: repository
   become: true
   tags:

@@ -7,6 +7,11 @@ pipeline {
         sh 'ls -la'
       }
     }
+//     stage('Install requirements') {
+//       steps {
+//         sh 'ansible-playbook -i ./deploy/ansible/inventory2 ./deploy/ansible/4dvop-playbook.yml --tags install-requirements'
+//       }
+//     }
     stage('Deploy registry') {
       steps {
         sh 'ansible-playbook -i ./deploy/ansible/inventory2 ./deploy/ansible/4dvop-playbook.yml --tags deploy-registry'

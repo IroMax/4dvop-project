@@ -7,7 +7,7 @@
   hosts: all:!jdac
   become: true
   tags:
-    - run-app-
+    - install-requirements
 
   pre_tasks:
     - name: Install epel-release
@@ -54,7 +54,7 @@
         image: registry
         state: started
         ports:
-          - "8000:5000"
+          - "5000:5000"
 
     - name: Deploy docker registry frontend task
       docker_container:
@@ -62,7 +62,7 @@
         state: started
         image: konradkleine/docker-registry-frontend:v2
         ports:
-          - "8080:80"
+          - "80:80"
         env:
           ENV_DOCKER_REGISTRY_HOST: registry-ctn
           ENV_DOCKER_REGISTRY_PORT: "5000"
