@@ -4,9 +4,9 @@ services:
   api:
     build: /opt/bitnami/jenkins/jenkins_home/workspace/4dvop-project_complete-playbook/appli/simple_api
     container_name: api
-    image: 192.168.1.37:8000/simple-api:v1
+    image: api:latest
     volumes:
-      - "./simple_api/student_age.json:/data/student_age.json"
+      - ./simple_api/student_age.json:/data/student_age.json
     ports:
       - 5001:5000
 
@@ -15,6 +15,9 @@ services:
     container_name: app
     volumes:
       - "./website:/var/www/html"
+    environment:
+      - USERNAME=toto
+      - PASSWORD=python
     ports:
       - 3000:80
     depends_on:
