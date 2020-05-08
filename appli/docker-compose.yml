@@ -2,7 +2,7 @@ version: '3'
 
 services:
   api:
-    build: ./simple_api
+    build: /opt/bitnami/jenkins/jenkins_home/workspace/4dvop-project_complete-playbook/appli/simple_api
     container_name: api
     image: 192.168.1.37:8000/simple-api:v1
     volumes:

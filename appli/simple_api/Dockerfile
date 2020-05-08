@@ -1,7 +1,7 @@
 FROM python:2.7-stretch
 LABEL maintainer="305028@supinfo.com - 303417@supinfo.com - 226908@supinfo.com"
 WORKDIR /
-COPY simple_api/student_age.py student_age.py
+COPY ./student_age.py student_age.py
 RUN apt-get update -y && apt-get install python-dev python3-dev libsasl2-dev python-dev libldap2-dev libssl-dev -y \
     && pip install flask flask_httpauth flask_simpleldap python-dotenv
 VOLUME ["/data"]
