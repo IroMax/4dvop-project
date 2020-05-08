@@ -165,7 +165,7 @@
 # ----------------------------------------------------------
 
 - name:  Push images to registry
-  hosts: deploy
+  hosts: jdac
   tags:
     - push-images
   tasks:
