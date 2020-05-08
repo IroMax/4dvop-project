@@ -3,40 +3,40 @@
 # ----------------------------------------------------------
 #                ALL VM
 # ----------------------------------------------------------
-- name: Docker installation on Repository VM
-  hosts: repository
-  become: true
-  tags:
-    - deploy-repository
-
-  pre_tasks:
-    - name: Install epel-release
-      yum:
-        name: epel-release
-        state: latest
-
-    - name: install the 'Development tools' package group
-      yum:
-        name: "@Development tools"
-        state: present
-
-    - name: Python-devel
-      yum:
-        name: python-devel
-        state: present
-
-    - name: Install python pip
-      yum:
-        name: python-pip
-        state: latest
-
-    - name: Install docker
-      pip:
-        name: docker
-
-  tasks:
-    - include_role:
-        name: docker-setup-role
+#- name: Docker installation on Repository VM
+#  hosts: repository
+#  become: true
+#  tags:
+#    - deploy-repository
+#
+#  pre_tasks:
+#    - name: Install epel-release
+#      yum:
+#        name: epel-release
+#        state: latest
+#
+#    - name: install the 'Development tools' package group
+#      yum:
+#        name: "@Development tools"
+#        state: present
+#
+#    - name: Python-devel
+#      yum:
+#        name: python-devel
+#        state: present
+#
+#    - name: Install python pip
+#      yum:
+#        name: python-pip
+#        state: latest
+#
+#    - name: Install docker
+#      pip:
+#        name: docker
+#
+#  tasks:
+#    - include_role:
+#        name: docker-setup-role
 
 
 - name:  Install requirements on JDAC container
@@ -71,6 +71,30 @@
         name: git
         state: present
         update_cache: yes
+
+    - name: Install epel-release
+      yum:
+        name: epel-release
+        state: latest
+
+    - name: install the 'Development tools' package group
+      yum:
+        name: "@Development tools"
+        state: present
+
+    - name: Python-devel
+      yum:
+        name: python-devel
+        state: present
+
+    - name: Install python pip
+      yum:
+        name: python-pip
+        state: latest
+
+    - name: Install docker
+      pip:
+        name: docker
 
   tasks:
     - include_role:
