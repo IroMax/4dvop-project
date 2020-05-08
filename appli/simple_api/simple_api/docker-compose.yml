@@ -6,7 +6,7 @@ services:
     container_name: api
     image: 192.168.1.37:8000/simple-api:v1
     volumes:
-      - ./student_age.json:/data/student_age.json
+      - $(pwd)/student_age.json:/data/student_age.json
     ports:
       - 5001:5000
 
