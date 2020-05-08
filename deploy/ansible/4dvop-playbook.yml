@@ -103,9 +103,9 @@
         build: yes
       register: output
 
- ----------------------------------------------------------
-      TEST simple api and stop container - VM DEPLOY
- ----------------------------------------------------------
+ #----------------------------------------------------------
+ #     TEST simple api and stop container - VM DEPLOY
+ #----------------------------------------------------------
 - name:  curl check
   hosts: deploy
   tags:
