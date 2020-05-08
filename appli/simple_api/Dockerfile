@@ -6,4 +6,4 @@ RUN apt-get update -y && apt-get install python-dev python3-dev libsasl2-dev pyt
     && pip install flask flask_httpauth flask_simpleldap python-dotenv
 VOLUME ["/data"]
 EXPOSE 5000
-CMD [ "python", "./student_age.py" ]
+CMD [ "python", "/student_age.py" ]
