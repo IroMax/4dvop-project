@@ -106,14 +106,14 @@
  #----------------------------------------------------------
  #     TEST simple api and stop container - VM DEPLOY
  #----------------------------------------------------------
-- name:  curl check
-  hosts: deploy
-  tags:
-    - test-simple-api-stop
-  tasks:
-    - name: Run check api
-      shell:
-        cmd: curl -u toto:python -X GET http://localhost:5001/pozos/api/v1.0/get_student_ages
+#- name:  curl check
+#  hosts: deploy
+#  tags:
+#    - test-simple-api-stop
+#  tasks:
+#    - name: Run check api
+#      shell:
+#        cmd: curl -u toto:python -X GET http://localhost:5001/pozos/api/v1.0/get_student_ages
 
 #uri:
 #  url: http://localhost:5001/pozos/api/v1.0/get_student_ages
@@ -125,17 +125,17 @@
 #                STOP API AND STUDENTLIST containers in JDAC VM
 # -----------------------------------------------------------------
 
-- name:  Stop Running containers (api and studentlist)
-  hosts: jdac
-  become: true
-  tags:
-    - test-simple-api-stop
-
-  tasks:
-    - name: Stop api and studentlist containers task
-      docker_compose:
-        project_src: /opt/bitnami/jenkins/jenkins_home/workspace/4dvop-project_complete-playbook/appli/simple_api/simple_api
-        stopped: yes
+#- name:  Stop Running containers (api and studentlist)
+#  hosts: jdac
+#  become: true
+#  tags:
+#    - test-simple-api-stop
+#
+#  tasks:
+#    - name: Stop api and studentlist containers task
+#      docker_compose:
+#        project_src: /opt/bitnami/jenkins/jenkins_home/workspace/4dvop-project_complete-playbook/appli/simple_api/simple_api
+#        stopped: yes
 
 # ----------------------------------------------------------
 #                CLAIR SCAN Build
