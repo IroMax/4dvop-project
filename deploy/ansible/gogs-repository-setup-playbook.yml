@@ -56,6 +56,10 @@
       pip:
         name: docker
 
+    - name: Create a registry-network network and connect containers
+      docker_network:
+        name: app-network
+        
   tasks:
     - include_role:
         name: postgres-setup-role
@@ -78,8 +82,9 @@
         image: gogs/gogs
         state: started
         ports:
-          - "23:22"
-          - "4000:3000"
+          - "3000:3000"
         networks:
           - name: app-network
         networks_cli_compatible: yes
+
+
