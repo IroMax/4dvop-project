@@ -101,6 +101,7 @@
       docker_compose:
         project_src: /opt/bitnami/jenkins/jenkins_home/workspace/4dvop-project_complete-playbook/appli/simple_api/simple_api
         build: yes
+        state: present
       register: output
 
 # ----------------------------------------------------------
