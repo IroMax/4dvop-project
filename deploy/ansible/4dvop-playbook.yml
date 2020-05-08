@@ -103,17 +103,17 @@
         build: yes
       register: output
 
-# ----------------------------------------------------------
-#      TEST simple api and stop container - VM DEPLOY
-# ----------------------------------------------------------
-#- name:  curl check
-#  hosts: deploy
-#  tags:
-#    - test-simple-api-stop
-#  tasks:
-#    - name: Run check api
-#      shell:
-#        cmd: curl -u toto:python -X GET http://localhost:5001/pozos/api/v1.0/get_student_ages
+ ----------------------------------------------------------
+      TEST simple api and stop container - VM DEPLOY
+ ----------------------------------------------------------
+- name:  curl check
+  hosts: deploy
+  tags:
+    - test-simple-api-stop
+  tasks:
+    - name: Run check api
+      shell:
+        cmd: curl -u toto:python -X GET http://localhost:5001/pozos/api/v1.0/get_student_ages
 
 #uri:
 #  url: http://localhost:5001/pozos/api/v1.0/get_student_ages
@@ -135,7 +135,7 @@
     - name: Stop api and studentlist containers task
       docker_compose:
         project_src: /opt/bitnami/jenkins/jenkins_home/workspace/4dvop-project_complete-playbook/appli/simple_api/simple_api
-        state: absent
+        stopped: yes
 
 # ----------------------------------------------------------
 #                CLAIR SCAN Build
