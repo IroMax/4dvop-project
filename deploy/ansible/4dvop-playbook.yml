@@ -196,21 +196,9 @@
     - run-app
 
   tasks:
-#    - name: Pull simple api images from private registry
-#      docker_image:
-#        name: 192.168.1.37:8000/simple-api
-#        tag: v1
-#        source: pull
-#
-#    - name: Pull studentlist app images from private registry
-#      docker_image:
-#        name: 192.168.1.37:8000/php
-#        tag: apache
-#        source: pull
-
     - name: Run api container
       docker_container:
-        name: simple-api
+        name: api
         image: 192.168.1.37:8000/simple-api:v1
         ports:
           - "5001:5000"
