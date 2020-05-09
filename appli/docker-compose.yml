@@ -4,7 +4,7 @@ services:
   api:
     build: /opt/bitnami/jenkins/jenkins_home/workspace/final/4dvop-project/appli/simple_api
     container_name: api
-    image: 192.168.1.12:8000/simple-api:v1
+    image: 192.168.48.12:8000/simple-api:v1
     ports:
       - 5001:5000
 
