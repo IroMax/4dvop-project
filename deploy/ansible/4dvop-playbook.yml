@@ -1,158 +1,66 @@
 ---
 
 # ----------------------------------------------------------
-#     Install prerequisites on Registry and Repository
+#                ALL VM
 # ----------------------------------------------------------
-#- name: Install docker
-#  hosts: registry,repository
-#  become: true
-#  tags:
-#    - inst-prerequisites
-
-#  tasks:
-#    - name: Install epel-release
-#      yum:
-#        name: epel-release
-#        state: latest
-      
-#    - name: Install python pip
-#      yum:
-#        name: python-pip
-#        state: latest
-    
-#    - name: Install docker
-#      pip:
-#        name: docker
-  
-#    - include_role: 
-#        name: geerlingguy.docker
-
-# ----------------------------------------------------------
-#      Install prerequisites on Application and Deploy
-# ----------------------------------------------------------
-
-- name: Install docker on jdac
-  hosts: jdac
-  become: true
-  tags:
-    - inst-prerequisites
-  tasks:
-    - name: Install docker
-      pip:
-        name: docker
-    
-    - name: Install docker-compose
-      pip:
-        name: docker-compose
-
-- name: Install docker 
+- name: Install docker
   hosts: all:!jdac
   become: true
   tags:
-    - inst-prerequisites
+    - install-requirements
 
-  tasks:
+  pre_tasks:
+    - name: Install epel-release
+      yum:
+        name: epel-release
+        state: latest
+
     - name: install the 'Development tools' package group
       yum:
         name: "@Development tools"
         state: present
-
-    - name: Install epel-release-app
-      yum:
-        name: epel-release
-        state: latest
 
     - name: Python-devel
       yum:
         name: python-devel
         state: present
 
-    - name: Upgrade pip
-      pip:
-        name: pip
-        executable: pip2
-        extra_args: --upgrade
+    - name: Install python pip
+      yum:
+        name: python-pip
+        state: latest
 
     - name: Install docker
       pip:
         name: docker
-    
-    - name: Install docker-compose
-      pip:
-        name: docker-compose
 
-
-
-
-# ----------------------------------------------------------
-#     RUN REPOSITORY GOS AND POSTGRES
-# ----------------------------------------------------------
-- name: Deploy Gos, private github repository
-  hosts: repository
-  become: true
-  tags:
-    - deploy-repository
-  
-  pre_tasks:
-    - name: Install git
-      yum:
-        name: git
-        state: present
-        update_cache: yes
-    
   tasks:
-
-    - include_role: 
-        name: postgres-setup-role
-      vars:
-        docker_postgres__name: 4dvop-pg-ctn
-        docker_postgres__image: postgres:11.1-alpine
-        docker_postgres__port: 5678
-        docker_postgres__superuser_name: superuser
-        docker_postgres__superuser_password: supersecret
-        docker_postgres__env:
-          POSTGRES_DB: 4dvop-db
-        docker_postgres__log_driver: syslog
-        docker_postgres__log_options:
-          syslog-facility: local0
-          tag: "{{ docker_postgres__name }}"
-
-    - name: Deploy private repository task
-      docker_container:
-        name: gogs-ctn
-        image: gogs/gogs
-        state: started
-        ports:
-          - "4000:3000"
-        networks:
-        - name: app-network
-        networks_cli_compatible: yes
-
-  
+    - include_role:
+        name: docker-setup-role
 
 # ----------------------------------------------------------
-#    RUN REGISTRY VM
+#                REGISTRY VM
 # ----------------------------------------------------------
 - name: Deploy registry, private docker registry
   hosts: registry
   become: true
   tags:
-    - deploy-registry  
+    - deploy-registry
+
   tasks:
-    - name: Deploy private repository task
+    - name: Deploy private registry task
       docker_container:
         name: registry-ctn
         image: registry
         state: started
         ports:
           - "8000:5000"
-          
-    - name: Deploy registry frontend task
+
+    - name: Deploy docker registry frontend task
       docker_container:
-        name: registry-frontend
+        name: registry-frontend-ctn
         state: started
         image: konradkleine/docker-registry-frontend:v2
-        links: registry-ctn:registry-ctn
         ports:
           - "80:80"
         env:
@@ -165,250 +73,177 @@
         name: registry-network
         connected:
           - registry-ctn
-          - registry-frontend
+          - registry-frontend-ctn
 
-# ----------------------------------------------------------
-#    GET Code From Repository on Deploy
-# ----------------------------------------------------------
-#- name:  Get code
-#  hosts: deploy
-#  tags:
-#    - get-code
-#  tasks:
-#    - name: Get code from private repo
-#      git:
-#         repo: 'http://192.168.48.11:4000/Djodane/4dvop'
-#         dest: /app
-#         clone: yes
+# -------------------------------------------------------------
+#                LOCAL build AND PUSH TO REGISTRY images VM
+# -------------------------------------------------------------
 
-# ----------------------------------------------------------
-#    GET Code From Repository on appli
-# ----------------------------------------------------------
-#- name:  Get code
-#  hosts: app
-#  tags:
-#    - get-code
-#  tasks:
-#    - name: Get code from private repo
-#      git:
-#         repo: 'http://192.168.48.11:4000/Djodane/4dvop'
-#         dest: /app
-#         clone: yes
-
-# ----------------------------------------------------------
-#    BUILD simple-api and php:apache
-# ----------------------------------------------------------
-- name:  Build simple-api and php:apache
+- name:  Install requirements, Build api and studentlist
   hosts: jdac
+  become: true
   tags:
-    - build-simple-api
+    - build-simple-api-and-website
+
+  pre_tasks:
+    - name: install Docker compose task in local
+      pip:
+        name: docker
+        state: present
+
+    - name: Docker-compose installation task in local
+      pip:
+        name: docker-compose
+        state: present
+
   tasks:
-    - name: Build task
+    - name: Build docker compose yaml file task
       docker_compose:
-        project_src: /opt/bitnami/jenkins/jenkins_home/workspace/4dvop_master/appli/build
+        project_src: /opt/bitnami/jenkins/jenkins_home/workspace/4dvop-project_complete-playbook/appli/
         build: yes
       register: output
-        
 
-
-
-# ----------------------------------------------------------
-#      RUN app on Deploy for test api
-# ----------------------------------------------------------
-
-- name:  Run app
-  hosts: jdac
-  tags:
-    - run-simple-api
-  tasks:
-    - name: Run app task
-      docker_container:
-        name: simple-api
-        image: simple-api:latest
-        ports:
-          - "5001:5000"
-#        volumes:
-#          - /opt/bitnami/jenkins/jenkins_home/workspace/4dvop_master/appli/simple_api:/usr/src/app
-#          - /app/appli/simple_api/student_age.json:/data/student_age.json
-
-# ----------------------------------------------------------
-#      TEST api from Deploy
-# ---------------------------------------------------------- 
+ #----------------------------------------------------------
+ #     TEST simple api and stop container - VM DEPLOY
+ #----------------------------------------------------------
 - name:  curl check
   hosts: deploy
   tags:
-    - test-simple-api
+    - test-simple-api-stop
   tasks:
     - name: Run check api
-      shell: 
+      shell:
         cmd: curl -u toto:python -X GET http://localhost:5001/pozos/api/v1.0/get_student_ages
 
-# ----------------------------------------------------------
-#      STOP api container from Deploy
-# ---------------------------------------------------------- 
+#uri:
+#  url: http://localhost:5001/pozos/api/v1.0/get_student_ages
+#  user: toto
+#  password: python
+#  method: GET
+#  status_code: 201
+# -----------------------------------------------------------------
+#                STOP API AND STUDENTLIST containers in JDAC VM
+# -----------------------------------------------------------------
 
-- name: Stop simple api container
-  hosts: deploy
+- name:  Stop Running containers (api and studentlist)
+  hosts: jdac
+  become: true
   tags:
-    - test-simple-api
+    - test-simple-api-stop
+
   tasks:
-     - name: Stop api
-       docker_container:
-         name: simple-api
-         state: stopped
+    - name: Stop api and studentlist containers task
+      docker_compose:
+        project_src: /opt/bitnami/jenkins/jenkins_home/workspace/4dvop-project_complete-playbook/appli
+        stopped: yes
 
-
-
-# ----------------------------------------------------------
-#                CLAIR SCAN Build
-# ----------------------------------------------------------
-- name:  Clair Scan
+## ----------------------------------------------------------
+##                CLAIR SCAN Build
+## ----------------------------------------------------------
+- name:  Clair Scan - Security testing
   hosts: jdac
   tags:
     - clair
   tasks:
     - name: Run clair task
       docker_compose:
-        project_src: /opt/bitnami/jenkins/jenkins_home/workspace/4dvop_master/deploy/clair
+        project_src: /opt/bitnami/jenkins/jenkins_home/workspace/4dvop-project_complete-playbook/deploy/clair
         build: yes
       register: output
 
-
-# ----------------------------------------------------------
-#                CLAIR SCAN Launch
-# ----------------------------------------------------------
-- name:  Clair launch
-  hosts: jdac
-  tags:
-    - clair
-  tasks:
     - name: Run clair job
-      shell:
-        cmd: clair-scanner --clair="http://clair:6060" --ip jdac simple-api:latest
-
-
-# ----------------------------------------------------------
-#     PUSH images to registry
-# ----------------------------------------------------------
-- name:  Push images
+      shell: |
+            if clair-scanner --clair="http://clair:6060" --ip jdac simple-api:latest
+            then
+              exit 1
+            else
+              exit 0
+            fi
+#
+## ----------------------------------------------------------
+##      PUSH images to registry - JDAC VM
+## ----------------------------------------------------------
+#
+- name:  Push images to registry
   hosts: jdac
   tags:
     - push-images
   tasks:
     - name: Push api to docker private registry task
       docker_image:
-        name: 192.168.48.12:8000/simple-api
-        force_tag: yes
-        tag: latest
+        name: 192.168.1.37:8000/simple-api
+        tag: v1
         push: yes
         source: local
-      
+
     - name: Tag php apache app image and push to registry task
       docker_image:
         name: php:apache
-        repository: 192.168.48.12:8000/php
-        tag: apache
+        repository: 192.168.1.37:8000/php:apache
         force_tag: yes
         push: yes
         source: local
-
-
-# ----------------------------------------------------------
-#     CLEAN Deploy docker image simple-api
-# ----------------------------------------------------------
-### A faire apres clair # Penser a ajouter la step dans le jenkinsfile
-- name:  Clean images
-  hosts: jdac
+#
+## ----------------------------------------------------------
+##      RUN apps  - APP VM
+## ----------------------------------------------------------
+#
+#
+- name:  Run applications
+  hosts: app
+  become: true
   tags:
-    - clean-api-image
+    - run-app
+
   tasks:
-    - name: Clean images
-      docker_image:
-        name: 192.168.48.12:8000/simple-api
+    - name: Run api container
+      docker_container:
+        name: api
+        image: 192.168.1.37:8000/simple-api:v1
+        ports:
+          - "5001:5000"
+
+    - name: Run studentlist frontend app container
+      docker_container:
+        name: app-ctn
+        image: 192.168.1.37:8000/php:apache
+        ports:
+          - "3000:80"
+
+    - name: copy website files to html folder
+      copy:
+        src: /opt/bitnami/jenkins/jenkins_home/workspace/4dvop-project_complete-playbook/appli/website
+        dest: /home/centos
+
+    - name: Copy website files from host to container
+      shell:
+        cmd: docker cp /home/centos/website/index.php app-ctn:/var/www/html/index.php
+
+    - name: Some clean up
+      file:
+        path: /home/centos/website
         state: absent
 
 
-
-# ----------------------------------------------------------
-#                APPLI Add daemon.json
-# ----------------------------------------------------------
-#- name: Clone Repository
-#  hosts: deploy
-#  become: true
-#  tags:
-#    - run-app
-    
- # tasks:
- #   - name: move app
- #     copy:
- #       src: /opt/bitnami/jenkins/jenkins_home/workspace/4dvop_master/appli
- #       dest: /home/centos
-
-#    - name: copy daemon.json
-#      shell:
-#        cmd: cp /app/appli/daemon.json /etc/docker/daemon.json  
-#    - name: copy daemon.json
-#      copy:
-#        src: /opt/bitnami/jenkins/jenkins_home/workspace/4dvop_master/appli/daemon.json
-#        dest: /etc/docker/daemon.json   
-
-#    - name: restart docker
-#      shell: service docker restart
-
-
-# ----------------------------------------------------------
-#                DEPLOY app on App
-# ----------------------------------------------------------
-#- name:  Get Image 
-#  hosts: app
-#  tags:
-#    - run-app
-#  tasks:    
-#    - name: Pull image
-#      docker_image:
-#        name: php:apache
-#        source: pull
-
-# ----------------------------------------------------------
-#                RUN app on App
-# ----------------------------------------------------------
-- name:  Run app
+#
+## ----------------------------------------------------------
+##      RUN SECURITY TESTING simple api and stop container - VM APP
+## ----------------------------------------------------------
+- name:  run the security test to ensure the application is secure (E2E Tests)
   hosts: app
   tags:
-    - run-app
+    - e2e-testing
   tasks:
-    - name: Copy Dockercompose file
+    - name: Pull gauntlt/gauntlt image
+      docker_image:
+        name: gauntlt/gauntlt
+        source: pull
+
+    - name: copy attaque file to app vm
       copy:
-        src: /opt/bitnami/jenkins/jenkins_home/workspace/4dvop_master/appli/docker-compose.yml
-        dest: /home/centos/docker-compose.yml
+        src: /opt/bitnami/jenkins/jenkins_home/workspace/4dvop-project_complete-playbook/xss.attack
+        dest: /home/centos/xss.attack
 
-    - name: Run app task
-      docker_compose:
-        project_src: /home/centos
-        build: no
-      register: output
-
-# ----------------------------------------------------------
-#                E2E Security tests with Gaultl/Arachni
-# ----------------------------------------------------------
-
-- name:  Get gaultl code
-  hosts: jdac
-  tags:
-    - e2e-test
-  tasks:
-    - name: Get code from gauntlt-docker
-      git:
-         repo: 'https://github.com/gauntlt/gauntlt-docker'
-         dest: /gauntlt
-         clone: yes
-
-    - name: Run gaultlt container
-      shell: make build
-      args:
-        chdir: /gauntlt
-
-    - name: Add binary stub to path
-      shell: install-stub
-      args:
-        chdir: /gauntlt
+    - name: Run security testing to studentlist app
+      shell:
+        cmd: docker run -t --rm=true -v /home/centos:/working -w /working gauntlt/gauntlt ./xss.attack

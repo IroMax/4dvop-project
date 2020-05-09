@@ -7,75 +7,76 @@ pipeline {
         sh 'ls -la'
       }
     }
-    stage('Install prerequisites on servers') {
+    stage('Install requirements') {
       steps {
-        echo 'Hello world'
- //       sh 'ansible-playbook -i ./deploy/ansible/inventory ./deploy/ansible/4dvop-playbook.yml --tags inst-prerequisites'
+        sh 'ansible-playbook -i ./deploy/ansible/inventory2 ./deploy/ansible/4dvop-playbook.yml --tags install-requirements'
       }
     }
-    stage('Deploy Registry') {
+    stage('Deploy registry') {
       steps {
-        echo 'Hello world'
- //       sh 'ansible-playbook -i ./deploy/ansible/inventory ./deploy/ansible/4dvop-playbook.yml --tags deploy-registry'
+        sh 'ansible-playbook -i ./deploy/ansible/inventory2 ./deploy/ansible/4dvop-playbook.yml --tags deploy-registry'
       }
     }
-    stage('Deploy Repository') {
+    stage('Build api') {
       steps {
-        echo 'Hello world'
- //       sh 'ansible-playbook -i ./deploy/ansible/inventory ./deploy/ansible/4dvop-playbook.yml --tags deploy-repository'
+        sh 'ansible-playbook -i ./deploy/ansible/inventory2 ./deploy/ansible/4dvop-playbook.yml --tags build-simple-api-and-website'
       }
     }
-    stage('Get Code on Build System') {
+    stage('Run api container') {
       steps {
-        echo 'Hello world'
- //       sh 'ansible-playbook -i ./deploy/ansible/inventory ./deploy/ansible/4dvop-playbook.yml --tags get-code'
+        sh 'ansible-playbook -i ./deploy/ansible/inventory2 ./deploy/ansible/4dvop-playbook.yml --tags run-simple-api'
       }
     }
-    stage('Build simple-api on Build System ') {
+    stage('Test api and stop containers') {
       steps {
-        echo 'Hello world'
-        sh 'ansible-playbook -i ./deploy/ansible/inventory ./deploy/ansible/4dvop-playbook.yml --tags build-simple-api'
+        sh 'ansible-playbook -i ./deploy/ansible/inventory2 ./deploy/ansible/4dvop-playbook.yml --tags test-simple-api-stop'
       }
     }
-
-    stage('Run simple-api container on Build System') {
+    stage('Validate image with Clair') {
+          steps {
+            sh 'ansible-playbook -i ./deploy/ansible/inventory2 ./deploy/ansible/4dvop-playbook.yml --tags clair'
+          }
+    }
+    stage('Push images to private registry') {
       steps {
-        echo 'Hello world'
-        sh 'ansible-playbook -i ./deploy/ansible/inventory ./deploy/ansible/4dvop-playbook.yml --tags run-simple-api'
+        sh 'ansible-playbook -i ./deploy/ansible/inventory2 ./deploy/ansible/4dvop-playbook.yml --tags push-images'
       }
     }
-    stage('Test simple-api on Build System ans stop') {
-      steps {
-        echo 'Hello world'
-        sh 'ansible-playbook -i ./deploy/ansible/inventory ./deploy/ansible/4dvop-playbook.yml --tags test-simple-api'
-      }
-    }
-    stage('Validate image with Clair on Build System') {
-      steps {
-        echo 'Hello world'
-//        sh 'ansible-playbook -i ./deploy/ansible/inventory ./deploy/ansible/4dvop-playbook.yml --tags clair'
-      }
-    }
-    stage('Push images to registry from Build System') {
-      steps {
-        echo 'Hello world'
-        sh 'ansible-playbook -i ./deploy/ansible/inventory ./deploy/ansible/4dvop-playbook.yml --tags push-images'
-      }
-    }
-    stage('Deploy app from Build System on App server') {
-      steps {
-        echo 'Hello world'
-        sh 'ansible-playbook -i ./deploy/ansible/inventory ./deploy/ansible/4dvop-playbook.yml --tags run-app'
-      }
-    }
-    stage('Run security testing with Arachni') {
-      steps {
-        echo 'Hello world'
-        sh 'ansible-playbook -i ./deploy/ansible/inventory ./deploy/ansible/4dvop-playbook.yml --tags e2e-test'
-      }
+    stage('Deploy the applications') {
+          steps {
+            sh 'ansible-playbook -i ./deploy/ansible/inventory2 ./deploy/ansible/4dvop-playbook.yml --tags run-app'
+          }
+        }
+    stage('(E2E Tests) with Gautlt') {
+          steps {
+            sh 'ansible-playbook -i ./deploy/ansible/inventory2 ./deploy/ansible/4dvop-playbook.yml --tags e2e-testing'
+          }
     }
   }
   post{
+//   failure {
+//   			script {
+//   				def body = "<b>Jenkins failure</b><br>Project: 4DVOP-PROJECT <br>Build Number: ${env.BUILD_NUMBER} <br>URL de build: ${env.BUILD_URL}"
+//   				def subject = "ERROR CI: Project name -> 4DVOP-PROJECT"
+//   				def	dest = "305028@supinfo.com"
+//   				mail bcc: '', body: body, cc: '', charset: 'UTF-8', from: '', mimeType: 'text/html', replyTo: '', subject: subject, to: dest;
+//   			}
+//   		}
+//   		success {
+//   			script {
+//   					def currentBranch = env.BRANCH_NAME
+//   					def body = "Hello, a new 4DVOP-PROJECT version available on ${currentBranch}"+
+//   					"<br><br><b>Deployment Report : </b>"+
+//   					"<br>&emsp;-Deployed Branch: ${env.BRANCH_NAME}"+
+//   					"<br><br>Best Regards"
+//
+//   					def subject = "[CI:${currentBranch}] New 4DVOP-PROJECT version available"
+//
+//   					def dev = "305028@supinfo.com"
+//
+//   					mail bcc: '', body: body, cc: '', charset: 'UTF-8', from: '', mimeType: 'text/html', replyTo: '', subject: subject, to: dev;
+//   			}
+//   		}
       always{
         //echo 'delete working directory at the end'
         //deleteDir()
@@ -86,9 +87,6 @@ pipeline {
         //sh 'docker rm -f $(docker ps -a -q)'
         //sh 'docker images'
         //sh 'docker rmi -f $(docker images -a -q)'
-      }
-      success{
-        echo "====++++Successfully completed++++===="
       }
   }
 }
