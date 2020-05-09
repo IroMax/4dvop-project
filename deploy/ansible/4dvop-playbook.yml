@@ -217,7 +217,7 @@
 
     - name: Run api and studentlist frontentd app
       docker_compose:
-        project_src: /opt/bitnami/jenkins/jenkins_home/workspace/4dvop-project_complete-playbook/appli
+        project_src: /opt/bitnami/jenkins/jenkins_home/workspace/4dvop-project_complete-playbook/appli/run
         build: no
         register: output
 
