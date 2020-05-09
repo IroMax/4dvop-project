@@ -219,10 +219,18 @@
       docker_container:
         name: app-ctn
         image: 192.168.1.37:8000/php:apache
-        volumes:
-          - /opt/bitnami/jenkins/jenkins_home/workspace/4dvop-project_complete-playbook/appli/website/index.php:/var/www/html/index.php
         ports:
           - "3000:80"
+
+    - name: copy website files to html folder
+      copy:
+        src: /opt/bitnami/jenkins/jenkins_home/workspace/4dvop-project_complete-playbook/appli/website
+        dest: /home/centos
+
+    - name: Copy website files from host to container
+      shell:
+        cmd: docker cp /home/centos/website/index.php app-ctn:/var/www/html/index.php
+
 #
 ## ----------------------------------------------------------
 ##      RUN SECURITY TESTING simple api and stop container - VM APP
