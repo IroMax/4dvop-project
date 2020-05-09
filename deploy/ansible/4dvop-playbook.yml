@@ -237,8 +237,8 @@
 
     - name: copy attaque file to app vm
       copy:
-        src: ./xss.attack
-        dest: /home/centos
+        src: /opt/bitnami/jenkins/jenkins_home/workspace/4dvop-project_complete-playbook/xss.attack
+        dest: /home/centos/xss.attack
 
     - name: Run security testing to studentlist app
       shell:
