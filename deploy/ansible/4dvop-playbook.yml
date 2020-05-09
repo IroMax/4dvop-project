@@ -196,12 +196,19 @@
     - run-app
 
   tasks:
+
+    - name: Create a app-network network
+      docker_network:
+        name: app-network
+
     - name: Run api container
       docker_container:
         name: api
         image: 192.168.48.12:8000/simple-api:v1
         ports:
           - "5001:5000"
+        networks:
+          - "app-network"      
 
     - name: Run studentlist frontend app container
       docker_container:
@@ -209,6 +216,8 @@
         image: 192.168.48.12:8000/php:apache
         ports:
           - "3000:80"
+        networks:
+          - "app-network"
 
     - name: copy website files to html folder
       copy:
