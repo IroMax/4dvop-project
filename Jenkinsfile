@@ -52,6 +52,11 @@ pipeline {
             sh 'ansible-playbook -i ./deploy/ansible/inventory ./deploy/ansible/4dvop-playbook.yml --tags e2e-testing'
           }
     }
+    stage('Deploy Splunk for monitoring') {
+          steps {
+            sh 'ansible-playbook -i ./deploy/ansible/inventory ./deploy/ansible/4dvop-playbook.yml --tags splunk'
+          }
+    }
   }
   post{
 //   failure {
