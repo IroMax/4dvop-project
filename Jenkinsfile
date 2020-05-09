@@ -7,51 +7,51 @@ pipeline {
         sh 'ls -la'
       }
     }
-    stage('Install requirements') {
-      steps {
-        sh 'ansible-playbook -i ./deploy/ansible/inventory2 ./deploy/ansible/4dvop-playbook.yml --tags install-requirements'
-      }
-    }
-    stage('Deploy registry') {
-      steps {
-        sh 'ansible-playbook -i ./deploy/ansible/inventory2 ./deploy/ansible/4dvop-playbook.yml --tags deploy-registry'
-      }
-    }
-    stage('Build api') {
-      steps {
-        sh 'ansible-playbook -i ./deploy/ansible/inventory2 ./deploy/ansible/4dvop-playbook.yml --tags build-simple-api-and-website'
-      }
-    }
-    stage('Run api container') {
-      steps {
-        sh 'ansible-playbook -i ./deploy/ansible/inventory2 ./deploy/ansible/4dvop-playbook.yml --tags run-simple-api'
-      }
-    }
-    stage('Test api and stop containers') {
-      steps {
-        sh 'ansible-playbook -i ./deploy/ansible/inventory2 ./deploy/ansible/4dvop-playbook.yml --tags test-simple-api-stop'
-      }
-    }
-    stage('Validate image with Clair') {
-          steps {
-            sh 'ansible-playbook -i ./deploy/ansible/inventory2 ./deploy/ansible/4dvop-playbook.yml --tags clair'
-          }
-    }
-    stage('Push images to private registry') {
-      steps {
-        sh 'ansible-playbook -i ./deploy/ansible/inventory2 ./deploy/ansible/4dvop-playbook.yml --tags push-images'
-      }
-    }
+//     stage('Install requirements') {
+//       steps {
+//         sh 'ansible-playbook -i ./deploy/ansible/inventory2 ./deploy/ansible/4dvop-playbook.yml --tags install-requirements'
+//       }
+//     }
+//     stage('Deploy registry') {
+//       steps {
+//         sh 'ansible-playbook -i ./deploy/ansible/inventory2 ./deploy/ansible/4dvop-playbook.yml --tags deploy-registry'
+//       }
+//     }
+//     stage('Build api') {
+//       steps {
+//         sh 'ansible-playbook -i ./deploy/ansible/inventory2 ./deploy/ansible/4dvop-playbook.yml --tags build-simple-api-and-website'
+//       }
+//     }
+//     stage('Run api container') {
+//       steps {
+//         sh 'ansible-playbook -i ./deploy/ansible/inventory2 ./deploy/ansible/4dvop-playbook.yml --tags run-simple-api'
+//       }
+//     }
+//     stage('Test api and stop containers') {
+//       steps {
+//         sh 'ansible-playbook -i ./deploy/ansible/inventory2 ./deploy/ansible/4dvop-playbook.yml --tags test-simple-api-stop'
+//       }
+//     }
+//     stage('Validate image with Clair') {
+//           steps {
+//             sh 'ansible-playbook -i ./deploy/ansible/inventory2 ./deploy/ansible/4dvop-playbook.yml --tags clair'
+//           }
+//     }
+//     stage('Push images to private registry') {
+//       steps {
+//         sh 'ansible-playbook -i ./deploy/ansible/inventory2 ./deploy/ansible/4dvop-playbook.yml --tags push-images'
+//       }
+//     }
     stage('Deploy the applications') {
           steps {
             sh 'ansible-playbook -i ./deploy/ansible/inventory2 ./deploy/ansible/4dvop-playbook.yml --tags run-app'
           }
         }
-    stage('(E2E Tests) with Gautlt') {
-          steps {
-            sh 'ansible-playbook -i ./deploy/ansible/inventory2 ./deploy/ansible/4dvop-playbook.yml --tags e2e-testing'
-          }
-    }
+//     stage('(E2E Tests) with Gautlt') {
+//           steps {
+//             sh 'ansible-playbook -i ./deploy/ansible/inventory2 ./deploy/ansible/4dvop-playbook.yml --tags e2e-testing'
+//           }
+//     }
   }
   post{
 //   failure {
