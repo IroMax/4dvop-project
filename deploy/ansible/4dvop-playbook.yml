@@ -275,7 +275,7 @@
           - "8000:8000"
         env: 
           SPLUNK_START_ARGS: "--accept-license"
-          SPLUNK_PASSWORD: splunk
+          SPLUNK_PASSWORD: Splunk12345
 
 - name:  Deploy Splunk and install agent
   hosts: all:!jdac
@@ -290,6 +290,6 @@
           - "9997:9997"
         env: 
           SPLUNK_START_ARGS: "--accept-license"
-          SPLUNK_PASSWORD: splunk
+          SPLUNK_PASSWORD: Splunk12345
   
           
