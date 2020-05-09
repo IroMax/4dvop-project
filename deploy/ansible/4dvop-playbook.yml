@@ -273,6 +273,7 @@
         image: splunk/splunk
         ports:
           - "8000:8000"
+          - "9998:9997"
         env: 
           SPLUNK_START_ARGS: "--accept-license"
           SPLUNK_PASSWORD: Splunk12345
