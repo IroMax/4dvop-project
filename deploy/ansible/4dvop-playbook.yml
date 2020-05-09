@@ -231,6 +231,12 @@
       shell:
         cmd: docker cp /home/centos/website/index.php app-ctn:/var/www/html/index.php
 
+    - name: Some clean up
+      file:
+        path: /home/centos/website
+        state: absent
+
+
 #
 ## ----------------------------------------------------------
 ##      RUN SECURITY TESTING simple api and stop container - VM APP
