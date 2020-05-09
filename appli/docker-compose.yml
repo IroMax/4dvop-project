@@ -12,7 +12,7 @@ services:
     image: php:apache
     container_name: app
     volumes:
-      - "./website:/var/www/html"
+      - "/opt/bitnami/jenkins/jenkins_home/workspace/4dvop-project_complete-playbook/appli/website:/var/www/html"
     environment:
       - USERNAME=toto
       - PASSWORD=python
