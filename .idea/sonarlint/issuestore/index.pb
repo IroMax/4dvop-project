@@ -1,10 +1,6 @@
 
 O
 deploy/jdac-docker-compose.yaml,b/5/b5852aec0288bb535cc5f1f8c83a1fcb25cb6855
-V
-&appli/simple_api/simple_api/Dockerfile,a/8/a8b58118c5914823399bdd775e1971750e11711c
-Y
-)appli/simple_api/appli/docker-compose.yml,4/d/4dd2fc73410d33e875aaed53f4671f7604a4279a
 ;
 Jenkinsfile,0/c/0c2c5c506cef0ed2d3ad2b7e45e97980b66f5520
 I
@@ -17,8 +13,6 @@ H
 appli/docker-compose.yml,a/6/a6b9493f232453d71a7d40dd46f32b38b10cecea
 O
 appli/simple_api/student_age.py,c/d/cd34936987936ec61e65489e913eb935686504cd
-^
-.appli/simple_api/simple_api/docker-compose.yml,9/4/94a84f4f7e24af6daf2b1f446a8ce0e2b972f8bf
 e
 5deploy/ansible/roles/docker-setup-role/tasks/main.yml,8/6/86d82d4074f7e1d97085809f1759bf5f6ecc0fb3
 P
@@ -30,3 +24,8 @@ Q
 !appli/simple_api/student_age.json,7/7/7739bdd52cacd12232169fca9c0582eae2f3da8e
 a
 1deploy/ansible/gogs-repository-setup-playbook.yml,3/b/3b393d62477d8b9ccec10e34178b7a73b1e42953
+:
+
+xss.attack,b/7/b7c09b0497fd91f4269f9538e5f09443f0cc12de
+K
+appli/simple_api/Dockerfile,e/7/e7487d5a43db92fcddbbed78a285cf62505a94a9

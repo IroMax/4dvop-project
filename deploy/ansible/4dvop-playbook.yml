@@ -106,14 +106,14 @@
  #----------------------------------------------------------
  #     TEST simple api and stop container - VM DEPLOY
  #----------------------------------------------------------
-#- name:  curl check
-#  hosts: deploy
-#  tags:
-#    - test-simple-api-stop
-#  tasks:
-#    - name: Run check api
-#      shell:
-#        cmd: curl -u toto:python -X GET http://localhost:5001/pozos/api/v1.0/get_student_ages
+- name:  curl check
+  hosts: deploy
+  tags:
+    - test-simple-api-stop
+  tasks:
+    - name: Run check api
+      shell:
+        cmd: curl -u toto:python -X GET http://localhost:5001/pozos/api/v1.0/get_student_ages
 
 #uri:
 #  url: http://localhost:5001/pozos/api/v1.0/get_student_ages
@@ -125,121 +125,121 @@
 #                STOP API AND STUDENTLIST containers in JDAC VM
 # -----------------------------------------------------------------
 
-#- name:  Stop Running containers (api and studentlist)
-#  hosts: jdac
-#  become: true
-#  tags:
-#    - test-simple-api-stop
-#
-#  tasks:
-#    - name: Stop api and studentlist containers task
-#      docker_compose:
-#        project_src: /opt/bitnami/jenkins/jenkins_home/workspace/4dvop-project_complete-playbook/appli/simple_api/simple_api
-#        stopped: yes
+- name:  Stop Running containers (api and studentlist)
+  hosts: jdac
+  become: true
+  tags:
+    - test-simple-api-stop
+
+  tasks:
+    - name: Stop api and studentlist containers task
+      docker_compose:
+        project_src: /opt/bitnami/jenkins/jenkins_home/workspace/4dvop-project_complete-playbook/appli/simple_api/simple_api
+        stopped: yes
 
 ## ----------------------------------------------------------
 ##                CLAIR SCAN Build
 ## ----------------------------------------------------------
-#- name:  Clair Scan - Security testing
-#  hosts: jdac
-#  tags:
-#    - clair
-#  tasks:
-#    - name: Run clair task
-#      docker_compose:
-#        project_src: /opt/bitnami/jenkins/jenkins_home/workspace/4dvop-project_complete-playbook/deploy/clair
-#        build: yes
-#      register: output
-#
-#    - name: Run clair job
-#      shell: |
-#            if clair-scanner --clair="http://clair:6060" --ip jdac simple-api:latest
-#            then
-#              exit 1
-#            else
-#              exit 0
-#            fi
+- name:  Clair Scan - Security testing
+  hosts: jdac
+  tags:
+    - clair
+  tasks:
+    - name: Run clair task
+      docker_compose:
+        project_src: /opt/bitnami/jenkins/jenkins_home/workspace/4dvop-project_complete-playbook/deploy/clair
+        build: yes
+      register: output
+
+    - name: Run clair job
+      shell: |
+            if clair-scanner --clair="http://clair:6060" --ip jdac simple-api:latest
+            then
+              exit 1
+            else
+              exit 0
+            fi
 #
 ## ----------------------------------------------------------
 ##      PUSH images to registry - JDAC VM
 ## ----------------------------------------------------------
 #
-#- name:  Push images to registry
-#  hosts: jdac
-#  tags:
-#    - push-images
-#  tasks:
-#    - name: Push api to docker private registry task
-#      docker_image:
-#        name: 192.168.1.37:8000/simple-api
-#        tag: v1
-#        push: yes
-#        source: local
-#
-#    - name: Tag php apache app image and push to registry task
-#      docker_image:
-#        name: php:apache
-#        repository: 192.168.1.37:8000/php:apache
-#        force_tag: yes
-#        push: yes
-#        source: local
+- name:  Push images to registry
+  hosts: jdac
+  tags:
+    - push-images
+  tasks:
+    - name: Push api to docker private registry task
+      docker_image:
+        name: 192.168.1.37:8000/simple-api
+        tag: v1
+        push: yes
+        source: local
+
+    - name: Tag php apache app image and push to registry task
+      docker_image:
+        name: php:apache
+        repository: 192.168.1.37:8000/php:apache
+        force_tag: yes
+        push: yes
+        source: local
 #
 ## ----------------------------------------------------------
 ##      RUN apps  - APP VM
 ## ----------------------------------------------------------
 #
 #
-#- name:  Run applications
-#  hosts: app
-#  become: true
-#  tags:
-#    - run-app
-#
-#  tasks:
-#    - name: Pull simple api images from private registry
-#      docker_image:
-#        name: 192.168.1.37:8000/simple-api
-#        tag: v1
-#        source: pull
-#
-#    - name: Pull studentlist app images from private registry
-#      docker_image:
-#        name: 192.168.1.37:8000/php
-#        tag: apache
-#        source: pull
-#
-#    - name: Run api container
-#      docker_container:
-#        name: simple-api
-#        image: 192.168.1.37:8000/simple-api:v1
-#        ports:
-#          - "5001:5000"
-#
-#    - name: Run studentlist frontend app container
-#      docker_container:
-#        name: app-ctn
-#        image: 192.168.1.37:8000/php:apache
-#        ports:
-#          - "3000:80"
+- name:  Run applications
+  hosts: app
+  become: true
+  tags:
+    - run-app
+
+  tasks:
+    - name: Pull simple api images from private registry
+      docker_image:
+        name: 192.168.1.37:8000/simple-api
+        tag: v1
+        source: pull
+
+    - name: Pull studentlist app images from private registry
+      docker_image:
+        name: 192.168.1.37:8000/php
+        tag: apache
+        source: pull
+
+    - name: Run api container
+      docker_container:
+        name: simple-api
+        image: 192.168.1.37:8000/simple-api:v1
+        ports:
+          - "5001:5000"
+
+    - name: Run studentlist frontend app container
+      docker_container:
+        name: app-ctn
+        image: 192.168.1.37:8000/php:apache
+        ports:
+          - "3000:80"
 #
 ## ----------------------------------------------------------
 ##      RUN SECURITY TESTING simple api and stop container - VM APP
 ## ----------------------------------------------------------
-#- name:  run the security test to ensure the application is secure (E2E Tests)
-#  hosts: app
-#  tags:
-#    - e2e-testing
-#  tasks:
-#    - name: Pull gauntlt/gauntlt image
-#      docker_image:
-#        name: gauntlt/gauntlt
-#        source: pull
-#
-#    - name: copy attaque file to app vm
-#      copy:
-#        src: ./xss.attack
-#        dest: /home/centos
-#
-#    - name: Run security testing to studentlist app
-#      shell:
-#        cmd: docker run -t --rm=true -v /home/centos:/working -w /working gauntlt/gauntlt ./xss.attack
+- name:  run the security test to ensure the application is secure (E2E Tests)
+  hosts: app
+  tags:
+    - e2e-testing
+  tasks:
+    - name: Pull gauntlt/gauntlt image
+      docker_image:
+        name: gauntlt/gauntlt
+        source: pull
+
+    - name: copy attaque file to app vm
+      copy:
+        src: ./xss.attack
+        dest: /home/centos
+
+    - name: Run security testing to studentlist app
+      shell:
+        cmd: docker run -t --rm=true -v /home/centos:/working -w /working gauntlt/gauntlt ./xss.attack
