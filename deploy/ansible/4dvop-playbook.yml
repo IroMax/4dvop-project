@@ -99,7 +99,7 @@
   tasks:
     - name: Build docker compose yaml file task
       docker_compose:
-        project_src: ./4DVOP-PROJECT_master/appli
+        project_src: opt/bitnami/jenkins/jenkins_home/workspace/4DVOP-PROJECT_master/appli
         build: yes
       register: output
 
