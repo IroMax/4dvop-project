@@ -196,38 +196,12 @@
     - run-app
 
   tasks:
-#    - name: Pull simple api images from private registry
-#      docker_image:
-#        name: 192.168.1.37:8000/simple-api
-#        tag: v1
-#        source: pull
-#
-#    - name: Pull studentlist app images from private registry
-#      docker_image:
-#        name: 192.168.1.37:8000/php
-#        tag: apache
-#        source: pull
-
-#    - name: Run api container
-#      docker_container:
-#        name: simple-api
-#        image: 192.168.1.37:8000/simple-api:v1
-#        ports:
-#          - "5001:5000"
-
     - name: Run api and studentlist frontentd app
       docker_compose:
         project_src: /opt/bitnami/jenkins/jenkins_home/workspace/4dvop-project_complete-playbook/appli/run
         build: no
-        register: output
+      register: output
 
-#      docker_container:
-#        name: app-ctn
-#        image: 192.168.1.37:8000/php:apache
-#        volumes:
-#          - /opt/bitnami/jenkins/jenkins_home/workspace/4dvop-project_complete-playbook/appli/website:/var/www/html
-#        ports:
-#          - "3000:80"
 #
 ## ----------------------------------------------------------
 ##      RUN SECURITY TESTING simple api and stop container - VM APP
