@@ -196,7 +196,7 @@
     - run-app
 
   tasks:
-    - name: Pull simple api images from private registry
+#    - name: Pull simple api images from private registry
 #      docker_image:
 #        name: 192.168.1.37:8000/simple-api
 #        tag: v1
