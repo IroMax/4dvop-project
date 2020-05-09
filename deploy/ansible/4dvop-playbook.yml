@@ -219,6 +219,8 @@
       docker_container:
         name: app-ctn
         image: 192.168.1.37:8000/php:apache
+        volumes:
+          - "/opt/bitnami/jenkins/jenkins_home/workspace/4dvop-project_complete-playbook/appli/website:/var/www/html"
         ports:
           - "3000:80"
 #
