@@ -208,7 +208,7 @@
         ports:
           - "5001:5000"
         networks:
-          - "app-network"      
+          - name: app-network      
 
     - name: Run studentlist frontend app container
       docker_container:
@@ -217,7 +217,7 @@
         ports:
           - "3000:80"
         networks:
-          - "app-network"
+          - name: app-network
 
     - name: copy website files to html folder
       copy:
