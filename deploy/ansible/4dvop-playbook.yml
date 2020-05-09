@@ -99,7 +99,7 @@
   tasks:
     - name: Build docker compose yaml file task
       docker_compose:
-        project_src: /opt/bitnami/jenkins/jenkins_home/workspace/4dvop-project_complete-playbook/appli/
+        project_src: /opt/bitnami/jenkins/jenkins_home/workspace/final/4dvop-project/appli
         build: yes
       register: output
 
@@ -134,7 +134,7 @@
   tasks:
     - name: Stop api and studentlist containers task
       docker_compose:
-        project_src: /opt/bitnami/jenkins/jenkins_home/workspace/4dvop-project_complete-playbook/appli
+        project_src: /opt/bitnami/jenkins/jenkins_home/workspace/final/4dvop-project/appli
         stopped: yes
 
 ## ----------------------------------------------------------
@@ -147,7 +147,7 @@
   tasks:
     - name: Run clair task
       docker_compose:
-        project_src: /opt/bitnami/jenkins/jenkins_home/workspace/4dvop-project_complete-playbook/deploy/clair
+        project_src: /opt/bitnami/jenkins/jenkins_home/workspace/final/4dvop-project/deploy/clair
         build: yes
       register: output
 
@@ -171,7 +171,7 @@
   tasks:
     - name: Push api to docker private registry task
       docker_image:
-        name: 192.168.1.37:8000/simple-api
+        name: 192.168.1.12:8000/simple-api
         tag: v1
         push: yes
         source: local
@@ -179,7 +179,7 @@
     - name: Tag php apache app image and push to registry task
       docker_image:
         name: php:apache
-        repository: 192.168.1.37:8000/php:apache
+        repository: 192.168.1.12:8000/php:apache
         force_tag: yes
         push: yes
         source: local
@@ -199,20 +199,20 @@
     - name: Run api container
       docker_container:
         name: api
-        image: 192.168.1.37:8000/simple-api:v1
+        image: 192.168.1.12:8000/simple-api:v1
         ports:
           - "5001:5000"
 
     - name: Run studentlist frontend app container
       docker_container:
         name: app-ctn
-        image: 192.168.1.37:8000/php:apache
+        image: 192.168.1.12:8000/php:apache
         ports:
           - "3000:80"
 
     - name: copy website files to html folder
       copy:
-        src: /opt/bitnami/jenkins/jenkins_home/workspace/4dvop-project_complete-playbook/appli/website
+        src: /opt/bitnami/jenkins/jenkins_home/workspace/final/4dvop-project/appli/website
         dest: /home/centos
 
     - name: Copy website files from host to container
@@ -241,7 +241,7 @@
 
     - name: copy attaque file to app vm
       copy:
-        src: /opt/bitnami/jenkins/jenkins_home/workspace/4dvop-project_complete-playbook/xss.attack
+        src: /opt/bitnami/jenkins/jenkins_home/workspace/final/4dvop-project/xss.attack
         dest: /home/centos/xss.attack
 
     - name: Run security testing to studentlist app
