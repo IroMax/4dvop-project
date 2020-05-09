@@ -99,7 +99,7 @@
   tasks:
     - name: Build docker compose yaml file task
       docker_compose:
-        project_src: /opt/bitnami/jenkins/jenkins_home/workspace/final/4dvop-project/appli
+        project_src: ./4DVOP-PROJECT_master/appli
         build: yes
       register: output
 
@@ -134,7 +134,7 @@
   tasks:
     - name: Stop api and studentlist containers task
       docker_compose:
-        project_src: /opt/bitnami/jenkins/jenkins_home/workspace/final/4dvop-project/appli
+        project_src: /opt/bitnami/jenkins/jenkins_home/workspace/4DVOP-PROJECT_master/appli
         stopped: yes
 
 ## ----------------------------------------------------------
@@ -147,7 +147,7 @@
   tasks:
     - name: Run clair task
       docker_compose:
-        project_src: /opt/bitnami/jenkins/jenkins_home/workspace/final/4dvop-project/deploy/clair
+        project_src: /opt/bitnami/jenkins/jenkins_home/workspace/4DVOP-PROJECT_master/deploy/clair
         build: yes
       register: output
 
@@ -212,7 +212,7 @@
 
     - name: copy website files to html folder
       copy:
-        src: /opt/bitnami/jenkins/jenkins_home/workspace/final/4dvop-project/appli/website
+        src: /opt/bitnami/jenkins/jenkins_home/workspace/4DVOP-PROJECT_master/appli/website
         dest: /home/centos
 
     - name: Copy website files from host to container
@@ -241,7 +241,7 @@
 
     - name: copy attaque file to app vm
       copy:
-        src: /opt/bitnami/jenkins/jenkins_home/workspace/final/4dvop-project/xss.attack
+        src: /opt/bitnami/jenkins/jenkins_home/workspace/4DVOP-PROJECT_master/xss.attack
         dest: /home/centos/xss.attack
 
     - name: Run security testing to studentlist app
