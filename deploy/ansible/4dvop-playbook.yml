@@ -277,20 +277,5 @@
         env: 
           SPLUNK_START_ARGS: "--accept-license"
           SPLUNK_PASSWORD: Splunk12345
-
-- name:  Deploy Splunk and install agent
-  hosts: all:!jdac
-  tags:
-    - splunk
-  tasks:
-    - name: Deploy Splunk forwarder
-      docker_container:
-        name: splunk-fwd
-        image: store/splunk/universalforwarder:7.3
-        ports:
-          - "9997:9997"
-        env: 
-          SPLUNK_START_ARGS: "--accept-license"
-          SPLUNK_PASSWORD: Splunk12345
-  
+       
           
