@@ -21,6 +21,11 @@ pipeline {
     BUILD_API_WEBSITE = "build-simple-api-and-website"
     RUN_API = "un-simple-api"
     TEST_API = "test-simple-api-stop"
+    CLAIR = "clair"
+    PUSH = "push-images"
+    RUN = "run-app"
+    TEST = "e2e-testing"
+    SPLUNK = "splunk"
   }
   stages {
     stage('Checkout the project'){
@@ -31,54 +36,52 @@ pipeline {
     }
     stage('Install requirements') {
       steps {
-        echo "toto aime faire ça"
-        echo "${EQUIREMENTS}"
         sh "ansible-playbook -i ${env.INVENTORY} ${env.PLAY_BOOK} --tags ${EQUIREMENTS}"
       }
     }
     stage('Deploy registry') {
       steps {
-        sh 'ansible-playbook -i ${env.INVENTORY} ${env.PLAY_BOOK} --tags deploy-registry'
+        sh 'ansible-playbook -i ${env.INVENTORY} ${env.PLAY_BOOK} --tags ${REGISTRY}'
       }
     }
     stage('Build api') {
       steps {
-        sh 'ansible-playbook -i ${env.INVENTORY} ${env.PLAY_BOOK} --tags build-simple-api-and-website'
+        sh 'ansible-playbook -i ${env.INVENTORY} ${env.PLAY_BOOK} --tags ${BUILD_API_WEBSITE}'
       }
     }
     stage('Run api container') {
       steps {
-        sh 'ansible-playbook -i ${env.INVENTORY} ${env.PLAY_BOOK} --tags run-simple-api'
+        sh 'ansible-playbook -i ${env.INVENTORY} ${env.PLAY_BOOK} --tags ${RUN_API}'
       }
     }
     stage('Test api and stop containers') {
       steps {
-        sh 'ansible-playbook -i ${env.INVENTORY} ${env.PLAY_BOOK} --tags test-simple-api-stop'
+        sh 'ansible-playbook -i ${env.INVENTORY} ${env.PLAY_BOOK} --tags ${TEST_API}'
       }
     }
     stage('Validate image with Clair') {
           steps {
-            sh 'ansible-playbook -i ${env.INVENTORY} ${env.PLAY_BOOK} --tags clair'
+            sh 'ansible-playbook -i ${env.INVENTORY} ${env.PLAY_BOOK} --tags ${CLAIR}'
           }
     }
     stage('Push images to private registry') {
       steps {
-        sh 'ansible-playbook -i ${env.INVENTORY} ${env.PLAY_BOOK} --tags push-images'
+        sh 'ansible-playbook -i ${env.INVENTORY} ${env.PLAY_BOOK} --tags ${PUSH}'
       }
     }
     stage('Deploy the applications') {
           steps {
-            sh 'ansible-playbook -i ${env.INVENTORY} ${env.PLAY_BOOK} --tags run-app'
+            sh 'ansible-playbook -i ${env.INVENTORY} ${env.PLAY_BOOK} --tags ${RUN}'
           }
         }
     stage('(E2E Tests) with Gautlt') {
           steps {
-            sh 'ansible-playbook -i ${env.INVENTORY} ${env.PLAY_BOOK} --tags e2e-testing'
+            sh 'ansible-playbook -i ${env.INVENTORY} ${env.PLAY_BOOK} --tags ${TEST}'
           }
     }
     stage('Deploy Splunk for monitoring') {
           steps {
-            sh 'ansible-playbook -i ${env.INVENTORY} ${env.PLAY_BOOK} --tags splunk'
+            sh 'ansible-playbook -i ${env.INVENTORY} ${env.PLAY_BOOK} --tags ${splunk}'
           }
     }
   }
