@@ -41,7 +41,7 @@ pipeline {
     }
     stage('Deploy registry') {
       steps {
-        sh 'ansible-playbook -i ${env.INVENTORY} ${env.PLAY_BOOK} --tags ${REGISTRY}'
+        ansiblePlaybook(vaultCredentialsId: 'AnsibleVaultPassword',inventory: '${env.INVENTORY}',playbook: '${env.PLAY_BOOK}',tags: '${REGISTRY}')
       }
     }
     stage('Build api') {
