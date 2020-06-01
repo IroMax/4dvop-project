@@ -30,6 +30,7 @@ pipeline {
     }
     stage('Install requirements') {
       steps {
+        echo "toto aime faire ça"
         echo "${Tags.REQUIREMENTS.getName()}"
         sh "ansible-playbook -i ${env.INVENTORY} ${env.PLAY_BOOK} --tags ${Tags.REQUIREMENTS.getName()}"
       }
