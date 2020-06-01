@@ -30,7 +30,8 @@ pipeline {
     }
     stage('Install requirements') {
       steps {
-        sh 'ansible-playbook -i ${env.INVENTORY} ${env.PLAY_BOOK} --tags ${Tags.REQUIREMENTS.getName()}'
+        echo "${Tags.REQUIREMENTS.getName()}"
+        sh "ansible-playbook -i ${env.INVENTORY} ${env.PLAY_BOOK} --tags ${Tags.REQUIREMENTS.getName()}"
       }
     }
     stage('Deploy registry') {
