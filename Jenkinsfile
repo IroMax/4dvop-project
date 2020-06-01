@@ -16,6 +16,11 @@ pipeline {
   environment{
     INVENTORY="./deploy/ansible/inventory2";
     PLAY_BOOK="./deploy/ansible/4dvop-playbook.yml"
+    EQUIREMENTS = "install-requirements"
+    REGISTRY = "deploy-registry"
+    BUILD_API_WEBSITE = "build-simple-api-and-website"
+    RUN_API = "un-simple-api"
+    TEST_API = "test-simple-api-stop"
   }
   stages {
     stage('Checkout the project'){
@@ -27,8 +32,8 @@ pipeline {
     stage('Install requirements') {
       steps {
         echo "toto aime faire ça"
-        echo "${Tags.REQUIREMENTS.name}"
-        sh "ansible-playbook -i ${env.INVENTORY} ${env.PLAY_BOOK} --tags ${Tags.REQUIREMENTS.name}"
+        echo "${EQUIREMENTS}"
+        sh "ansible-playbook -i ${env.INVENTORY} ${env.PLAY_BOOK} --tags ${EQUIREMENTS}"
       }
     }
     stage('Deploy registry') {
