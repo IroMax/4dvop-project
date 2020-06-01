@@ -1,4 +1,4 @@
-public enum Tags{
+enum Tags{
     REQUIREMENTS("install-requirements"),
     REGISTRY("deploy-registry"),
     BUILD_API_WEBSITE("build-simple-api-and-website"),
@@ -11,7 +11,7 @@ public enum Tags{
         this.name = name;
     }
 
-    public String getName(){
+    String getName(){
         return this.name;
     }
 }
