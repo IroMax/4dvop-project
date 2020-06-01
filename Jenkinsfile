@@ -36,7 +36,7 @@ pipeline {
     }
     stage('Install requirements') {
       steps {
-        ansiblePlaybook(vaultCredentialsId: 'AnsibleVaultPassword',inventory: '${env.INVENTORY}',playbook: '${env.PLAY_BOOK}',tags: '${EQUIREMENTS}')
+        ansiblePlaybook(vaultCredentialsId: 'AnsibleVaultPassword',inventory: "${env.INVENTORY}",playbook: "${env.PLAY_BOOK}",tags: "${EQUIREMENTS}")
       }
     }
     stage('Deploy registry') {
