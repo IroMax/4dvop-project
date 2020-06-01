@@ -1,8 +1,9 @@
 ---
 
 # ----------------------------------------------------------
-#                ALL VM
+#                ALL VM except jdac
 # ----------------------------------------------------------
+
 - name: Install docker
   hosts: all:!jdac
   become: true
@@ -41,6 +42,7 @@
 # ----------------------------------------------------------
 #                REGISTRY VM
 # ----------------------------------------------------------
+
 - name: Deploy registry, private docker registry
   hosts: registry
   become: true
@@ -99,28 +101,26 @@
   tasks:
     - name: Build docker compose yaml file task
       docker_compose:
-        project_src: /opt/bitnami/jenkins/jenkins_home/workspace/4DVOP-PROJECT_master/appli
+        project_src: '{{project_path}}/appli'
         build: yes
       register: output
 
  #----------------------------------------------------------
  #     TEST simple api and stop container - VM DEPLOY
  #----------------------------------------------------------
+
 - name:  curl check
   hosts: deploy
   tags:
     - test-simple-api-stop
   tasks:
     - name: Run check api
-      shell:
-        cmd: curl -u toto:python -X GET http://localhost:5001/pozos/api/v1.0/get_student_ages
-
-#uri:
-#  url: http://localhost:5001/pozos/api/v1.0/get_student_ages
-#  user: toto
-#  password: python
-#  method: GET
-#  status_code: 201
+      uri:
+        url: http://localhost:5001/pozos/api/v1.0/get_student_ages
+        user: toto
+        password: python
+        method: GET
+        status_code: 200
 # -----------------------------------------------------------------
 #                STOP API AND STUDENTLIST containers in JDAC VM
 # -----------------------------------------------------------------
@@ -134,12 +134,13 @@
   tasks:
     - name: Stop api and studentlist containers task
       docker_compose:
-        project_src: /opt/bitnami/jenkins/jenkins_home/workspace/4DVOP-PROJECT_master/appli
+        project_src: '{{project_path}}/appli'
         stopped: yes
 
 ## ----------------------------------------------------------
 ##                CLAIR SCAN Build
 ## ----------------------------------------------------------
+
 - name:  Clair Scan - Security testing
   hosts: jdac
   tags:
@@ -147,7 +148,7 @@
   tasks:
     - name: Run clair task
       docker_compose:
-        project_src: /opt/bitnami/jenkins/jenkins_home/workspace/4DVOP-PROJECT_master/deploy/clair
+        project_src: '{{project_path}}/deploy/clair'
         build: yes
       register: output
 
@@ -159,11 +160,11 @@
             else
               exit 0
             fi
-#
+
 ## ----------------------------------------------------------
 ##      PUSH images to registry - JDAC VM
 ## ----------------------------------------------------------
-#
+
 - name:  Push images to registry
   hosts: jdac
   tags:
@@ -183,12 +184,11 @@
         force_tag: yes
         push: yes
         source: local
-#
+
 ## ----------------------------------------------------------
 ##      RUN apps  - APP VM
 ## ----------------------------------------------------------
-#
-#
+
 - name:  Run applications
   hosts: app
   become: true
@@ -208,7 +208,7 @@
         ports:
           - "5001:5000"
         networks:
-          - name: app-network      
+          - name: app-network
 
     - name: Run studentlist frontend app container
       docker_container:
@@ -221,23 +221,23 @@
 
     - name: copy website files to html folder
       copy:
-        src: /opt/bitnami/jenkins/jenkins_home/workspace/4DVOP-PROJECT_master/appli/website
-        dest: /home/centos
+        src: '{{project_path}}/appli/website'
+        dest: '{{home_path}}'
 
     - name: Copy website files from host to container
       shell:
-        cmd: docker cp /home/centos/website/index.php app-ctn:/var/www/html/index.php
+        cmd: 'docker cp {{home_path}}/website/index.php app-ctn:/var/www/html/index.php'
 
     - name: Some clean up
       file:
-        path: /home/centos/website
+        path: '{{home_path}}/website'
         state: absent
 
 
-#
-## ----------------------------------------------------------
+## -------------------------------------------------------------------
 ##      RUN SECURITY TESTING simple api and stop container - VM APP
-## ----------------------------------------------------------
+## -------------------------------------------------------------------
+
 - name:  run the security test to ensure the application is secure (E2E Tests)
   hosts: app
   tags:
@@ -250,19 +250,19 @@
 
     - name: copy attaque file to app vm
       copy:
-        src: /opt/bitnami/jenkins/jenkins_home/workspace/4DVOP-PROJECT_master/xss.attack
-        dest: /home/centos/xss.attack
+        src: '{{project_path}}/xss.attack'
+        dest: '{{home_path}}/xss.attack'
 
     - name: Run security testing to studentlist app
       shell:
-        cmd: docker run -t --rm=true -v /home/centos:/working -w /working gauntlt/gauntlt ./xss.attack
+        cmd: 'docker run -t --rm=true -v {{home_path}}:/working -w /working gauntlt/gauntlt ./xss.attack'
 
 
 ## ----------------------------------------------------------
-##      DEPLOY SPLUNK AND INSTALL AGENT
+##      DEPLOY SPLUNK CONTAINER -- DEPLOY VM
 ## ----------------------------------------------------------
 
-- name:  Deploy Splunk and install agent
+- name:  Deploy Splunk container
   hosts: deploy
   tags:
     - splunk
@@ -274,8 +274,8 @@
         ports:
           - "8000:8000"
           - "9998:9997"
-        env: 
+        env:
           SPLUNK_START_ARGS: "--accept-license"
           SPLUNK_PASSWORD: Splunk12345
-       
-          
+
+
