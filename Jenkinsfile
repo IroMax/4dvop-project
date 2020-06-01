@@ -26,9 +26,9 @@ pipeline {
     }
     stage('Install requirements') {
       steps {
-        echo "toto aime faire ça"
+        sh echo "toto aime faire ça"
         def require = ${Tags.REQUIREMENTS.name}
-        echo "${require}"
+        sh echo "${require}"
         sh "ansible-playbook -i ${env.INVENTORY} ${env.PLAY_BOOK} --tags ${Tags.REQUIREMENTS.name}"
       }
     }
