@@ -10,10 +10,6 @@ enum Tags{
     private Tags(String name){
         this.name = name;
     }
-
-    String getName(){
-        return this.name;
-    }
 }
 pipeline {
   agent any
