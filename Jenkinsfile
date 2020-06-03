@@ -1,7 +1,7 @@
 pipeline {
   agent any
   environment{
-    INVENTORY="./deploy/ansible/inventory2";
+    INVENTORY="./deploy/ansible/inventory";
     PLAY_BOOK="./deploy/ansible/4dvop-playbook.yml"
     EQUIREMENTS = "install-requirements"
     REGISTRY = "deploy-registry"

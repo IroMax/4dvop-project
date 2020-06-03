@@ -1,21 +1,21 @@
 [all]
-192.168.48.11 ansible_ssh_pass=centos ansible_sudo_pass=centos
-192.168.48.10 ansible_ssh_pass=centos ansible_sudo_pass=centos
-192.168.48.12 ansible_ssh_pass=centos ansible_sudo_pass=centos
-192.168.48.13 ansible_ssh_pass=centos ansible_sudo_pass=centos
+192.168.48.11 ansible_ssh_pass={{password}} ansible_sudo_pass={{password}}
+192.168.48.10 ansible_ssh_pass={{password}} ansible_sudo_pass={{password}}
+192.168.48.12 ansible_ssh_pass={{password}} ansible_sudo_pass={{password}}
+192.168.48.13 ansible_ssh_pass={{password}} ansible_sudo_pass={{password}}
 172.19.0.2 ansible_connection=local
 
 [app]
-192.168.48.13 ansible_ssh_pass=centos ansible_sudo_pass=centos
+192.168.48.13 ansible_ssh_pass={{password}} ansible_sudo_pass={{password}} home_path=/home/centos
 
 [registry]
-192.168.48.12 ansible_ssh_pass=centos ansible_sudo_pass=centos
+192.168.48.12 ansible_ssh_pass={{password}} ansible_sudo_pass={{password}}
 
 [repository]
-192.168.48.11 ansible_ssh_pass=centos ansible_sudo_pass=centos
+192.168.48.11 ansible_ssh_pass={{password}} ansible_sudo_pass={{password}}
 
 [deploy]
-192.168.48.10 ansible_ssh_pass=centos ansible_sudo_pass=centos
+192.168.48.10 ansible_ssh_pass={{password}} ansible_sudo_pass={{password}}
 
 [jdac]
-172.19.0.2 ansible_connection=local
+172.19.0.2 ansible_connection=local project_path=/opt/bitnami/jenkins/jenkins_home/workspace/4DVOP-PROJECT_master
