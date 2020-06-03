@@ -116,11 +116,19 @@
   tasks:
     - name: Run check api
       uri:
-        url: http://localhost:5001/pozos/api/v1.0/get_student_ages
+        url: http://localhost:5002/pozos/api/v1.0/get_student_ages
         user: toto
         password: python
         method: GET
         status_code: 200
+
+# Lancement de la tache avec un curl
+#  tasks:
+#    - name: Run check api
+#      shell:
+#        cmd: curl -u toto:python -X GET http://localhost:5002/pozos/api/v1.0/get_student_ages
+
+
 # -----------------------------------------------------------------
 #                STOP API AND STUDENTLIST containers in JDAC VM
 # -----------------------------------------------------------------

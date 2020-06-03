@@ -6,7 +6,7 @@ services:
     container_name: api
     image: 192.168.48.12:8000/simple-api:v1
     ports:
-      - 5001:5000
+      - 5002:5000
 
   website:
     image: php:apache
