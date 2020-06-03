@@ -101,7 +101,7 @@
   tasks:
     - name: Build docker compose yaml file task
       docker_compose:
-        project_src: '{{project_path}}/appli'
+        project_src: "{{project_path}}/appli"
         build: yes
       register: output
 
