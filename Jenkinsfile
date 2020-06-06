@@ -18,7 +18,6 @@ pipeline {
     stage('Checkout the project'){
       steps {
         checkout scm
-        sh 'ls -la'
       }
     }
     stage('Install requirements') {
@@ -74,8 +73,7 @@ pipeline {
   }
   post{
       always{
-          echo "test"
-//        deleteDir()
+        deleteDir()
       }
   }
 }

@@ -205,6 +205,11 @@
 
   tasks:
 
+    - name: copy website files to app host
+      copy:
+        src: '{{project_path}}/appli/website'
+        dest: '{{home_path}}'
+
     - name: Create a app-network network
       docker_network:
         name: app-network
@@ -226,15 +231,12 @@
           - "3000:80"
         networks:
           - name: app-network
+        volumes:
+          - '{{home_path}}/website/index.php app-ctn:/var/www/html/index.php'
 
-    - name: copy website files to html folder
-      copy:
-        src: '{{project_path}}/appli/website'
-        dest: '{{home_path}}'
-
-    - name: Copy website files from host to container
-      shell:
-        cmd: 'docker cp {{home_path}}/website/index.php app-ctn:/var/www/html/index.php'
+#    - name: Copy website files from host to container
+#      shell:
+#        cmd: 'docker cp {{home_path}}/website/index.php app-ctn:/var/www/html/index.php'
 
     - name: Some clean up
       file:
