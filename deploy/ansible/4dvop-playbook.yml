@@ -213,8 +213,9 @@
     - name: RUN api and app docker compose 
       docker_compose:
         project_src: "{{project_path}}/appli"
-        file: run-docker-compose.yml
+        files: run-docker-compose.yml
       register: output
+      
     # - name: Create a app-network network
     #   docker_network:
     #     name: app-network
