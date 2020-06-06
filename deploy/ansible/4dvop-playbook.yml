@@ -210,38 +210,43 @@
         src: '{{project_path}}/appli/website'
         dest: '{{home_path}}'
 
-    - name: Create a app-network network
-      docker_network:
-        name: app-network
+    - name: RUN api and app docker compose 
+      docker_compose:
+        project_src: "{{project_path}}/appli"
+        build: yes
+      register: output
+    # - name: Create a app-network network
+    #   docker_network:
+    #     name: app-network
 
-    - name: Run api container
-      docker_container:
-        name: api
-        image: 192.168.48.12:8000/simple-api:v1
-        ports:
-          - "5001:5000"
-        networks:
-          - name: app-network
+    # - name: Run api container
+    #   docker_container:
+    #     name: api
+    #     image: 192.168.48.12:8000/simple-api:v1
+    #     ports:
+    #       - "5001:5000"
+    #     networks:
+    #       - name: app-network
 
-    - name: Run studentlist frontend app container
-      docker_container:
-        name: app-ctn
-        image: 192.168.48.12:8000/php:apache
-        ports:
-          - "3000:80"
-        networks:
-          - name: app-network
-        volumes:
-          - '{{home_path}}/website/index.php:/var/www/html/index.php'
+    # - name: Run studentlist frontend app container
+    #   docker_container:
+    #     name: app-ctn
+    #     image: 192.168.48.12:8000/php:apache
+    #     ports:
+    #       - "3000:80"
+    #     networks:
+    #       - name: app-network
+    #     volumes:
+    #       - '{{home_path}}/website/index.php:/var/www/html/index.php'
 
 #    - name: Copy website files from host to container
 #      shell:
 #        cmd: 'docker cp {{home_path}}/website/index.php app-ctn:/var/www/html/index.php'
 
-    - name: Some clean up
-      file:
-        path: '{{home_path}}/website'
-        state: absent
+    # - name: Some clean up
+    #   file:
+    #     path: '{{home_path}}/website'
+    #     state: absent
 
 
 ## -------------------------------------------------------------------
