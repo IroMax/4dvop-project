@@ -212,7 +212,7 @@
 
     - name: RUN api and app docker compose 
       docker_compose:
-        project_src: "{{home_path}}"
+        project_src: "{{home_path}}/appli"
         files: run-docker-compose.yml
       register: output
 
