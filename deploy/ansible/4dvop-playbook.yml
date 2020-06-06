@@ -213,7 +213,7 @@
     - name: RUN api and app docker compose 
       docker_compose:
         project_src: "{{project_path}}/appli"
-        build: yes
+        file: run-docker-compose.yml
       register: output
     # - name: Create a app-network network
     #   docker_network:
@@ -239,9 +239,9 @@
     #     volumes:
     #       - '{{home_path}}/website/index.php:/var/www/html/index.php'
 
-#    - name: Copy website files from host to container
-#      shell:
-#        cmd: 'docker cp {{home_path}}/website/index.php app-ctn:/var/www/html/index.php'
+    #    - name: Copy website files from host to container
+    #      shell:
+    #        cmd: 'docker cp {{home_path}}/website/index.php app-ctn:/var/www/html/index.php'
 
     # - name: Some clean up
     #   file:
@@ -263,7 +263,7 @@
         name: gauntlt/gauntlt
         source: pull
 
-    - name: copy attaque file to app vm
+    - name: copy attack file to app vm
       copy:
         src: '{{project_path}}/xss.attack'
         dest: '{{home_path}}/xss.attack'
