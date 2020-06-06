@@ -232,7 +232,7 @@
         networks:
           - name: app-network
         volumes:
-          - '{{home_path}}/website/index.php app-ctn:/var/www/html/index.php'
+          - '{{home_path}}/website/index.php:/var/www/html/index.php'
 
 #    - name: Copy website files from host to container
 #      shell:
