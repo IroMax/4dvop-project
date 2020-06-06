@@ -8,7 +8,7 @@ services:
       - 5001:5000
 
   website:
-    image: php:apache
+    image: 192.168.48.12:8000/php:apache
     container_name: app
     volumes:
       - "/home/centos/website/index.php:/var/www/html/index.php"
