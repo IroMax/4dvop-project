@@ -205,17 +205,17 @@
 
   tasks:
 
-    - name: copy website files to app host
+    - name: copy files to app host
       copy:
-        src: '{{project_path}}/appli/website'
+        src: '{{project_path}}/appli'
         dest: '{{home_path}}'
 
     - name: RUN api and app docker compose 
       docker_compose:
-        project_src: "{{project_path}}/appli"
+        project_src: "{{home_path}}"
         files: run-docker-compose.yml
       register: output
-      
+
     # - name: Create a app-network network
     #   docker_network:
     #     name: app-network
